@@ -10,7 +10,7 @@ Bat::Bat(olc::PixelGameEngine* Engine)
   BatHeight = 5.0f;
 }
 
-void Bat::Draw(Engine* EngineInstance) 
+void Bat::Draw(Engine* EngineInstance)
 {
   EngineInstance->FillRect(int(BatPosition), EngineInstance->ScreenHeight()-20, int(BatWidth), int(BatHeight), olc::YELLOW);
 }

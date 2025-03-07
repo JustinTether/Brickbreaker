@@ -11,7 +11,7 @@ class Bat : public BaseObject
     float BatHeight;
     
     Bat(olc::PixelGameEngine* Engine);
-    virtual void Draw(Engine* EngineInstance);
-    virtual void Update(Engine* EngineInstance, float DeltaTime);
+    virtual void Draw(Engine* EngineInstance) override;
+    virtual void Update(Engine* EngineInstance, float DeltaTime) override;
     
 };

@@ -1,6 +1,5 @@
 build/*
 CMakeFiles/
-cmake/
 CMakeCache.txt
 compile_commands.json
 Makefile

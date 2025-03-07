@@ -8,7 +8,7 @@ Ball::Ball(Engine* Engine)
     BallColour = olc::BLUE;
     BallSpeed = 3.0f;
     float Angle = -0.4f;
-    BallVelocity = { cos(Angle), sin(Angle) };
+    BallVelocity = { static_cast<float>(cos(Angle)), static_cast<float>(sin(Angle)) };
     BallPosition = olc::vf2d(12.5f, 15.5f);
     HitSound = Engine->AudioManager.LoadSound("../assets/sounds/hit.wav");
     ResetBall(Engine);
@@ -59,7 +59,7 @@ void Ball::ResetBall(olc::PixelGameEngine* Engine)
     //float BallAngle = (float(rand()) / (float(RAND_MAX) * 2.0f) * 3.14169f);
     float BallAngle = -1.25f;
 
-    BallVelocity = {BallSpeed * cos(BallAngle), BallSpeed * sin(BallAngle)};
+    BallVelocity = {static_cast<float>(BallSpeed * cos(BallAngle)), static_cast<float>(BallSpeed * sin(BallAngle))};
     BallPosition = olc::vf2d(12.5f, 15.5f);
 }
 
