@@ -1,6 +1,7 @@
 #include "BaseObject.h"
 #include "Ball.h"
 #include "../engine/engine.h"
+#include "BaseBrick.h"
 Ball::Ball(Engine* Engine)
 {
     // Set initial ball position to the middle of the screen-ish
@@ -69,8 +70,14 @@ bool Ball::TestCollisionPoint(olc::vf2d point, Engine* Engine)
     olc::vf2d PotentialBallPos = BallPosition + BallVelocity * Engine->GetElapsedTime();
 
     olc::vi2d TestPoint = PotentialBallPos + TileBallRadialDims * point;
-    auto& tile = Engine->Tiles[TestPoint.y * Engine->MapWidth + TestPoint.x];
-    if (tile == 0)
+    BaseBrick* tile = Engine->Bricks[TestPoint.y * Engine->MapWidth + TestPoint.x];
+
+    if (!tile)
+    {
+      return false;
+    }
+
+    if (tile->bIsAir)
     {
         // Do Nothing, no collision
         return false;
@@ -78,8 +85,8 @@ bool Ball::TestCollisionPoint(olc::vf2d point, Engine* Engine)
     else
     {
         // Ball has collided with a tile
-        bool bTileHit = tile < 10;
-        if (bTileHit) tile--;
+        bool bTileHit = !tile->bIsAir || !tile->bIsWall;
+        if (bTileHit) tile->OnCollide();
                
         if(bTileHit)
         {
