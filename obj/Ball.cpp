@@ -1,6 +1,7 @@
 #include "BaseObject.h"
 #include "Ball.h"
 #include "../engine/engine.h"
+#include "BaseBrick.h"
 Ball::Ball(Engine* Engine)
 {
     // Set initial ball position to the middle of the screen-ish
@@ -8,7 +9,7 @@ Ball::Ball(Engine* Engine)
     BallColour = olc::BLUE;
     BallSpeed = 3.0f;
     float Angle = -0.4f;
-    BallVelocity = { cos(Angle), sin(Angle) };
+    BallVelocity = { static_cast<float>(cos(Angle)), static_cast<float>(sin(Angle)) };
     BallPosition = olc::vf2d(12.5f, 15.5f);
     HitSound = Engine->AudioManager.LoadSound("../assets/sounds/hit.wav");
     ResetBall(Engine);
@@ -59,7 +60,7 @@ void Ball::ResetBall(olc::PixelGameEngine* Engine)
     //float BallAngle = (float(rand()) / (float(RAND_MAX) * 2.0f) * 3.14169f);
     float BallAngle = -1.25f;
 
-    BallVelocity = {BallSpeed * cos(BallAngle), BallSpeed * sin(BallAngle)};
+    BallVelocity = {static_cast<float>(BallSpeed * cos(BallAngle)), static_cast<float>(BallSpeed * sin(BallAngle))};
     BallPosition = olc::vf2d(12.5f, 15.5f);
 }
 
@@ -69,8 +70,14 @@ bool Ball::TestCollisionPoint(olc::vf2d point, Engine* Engine)
     olc::vf2d PotentialBallPos = BallPosition + BallVelocity * Engine->GetElapsedTime();
 
     olc::vi2d TestPoint = PotentialBallPos + TileBallRadialDims * point;
-    auto& tile = Engine->Tiles[TestPoint.y * Engine->MapWidth + TestPoint.x];
-    if (tile == 0)
+    BaseBrick* tile = Engine->Bricks[TestPoint.y * Engine->MapWidth + TestPoint.x];
+
+    if (!tile)
+    {
+      return false;
+    }
+
+    if (tile->bIsAir)
     {
         // Do Nothing, no collision
         return false;
@@ -78,8 +85,8 @@ bool Ball::TestCollisionPoint(olc::vf2d point, Engine* Engine)
     else
     {
         // Ball has collided with a tile
-        bool bTileHit = tile < 10;
-        if (bTileHit) tile--;
+        bool bTileHit = !tile->bIsAir || !tile->bIsWall;
+        if (bTileHit) tile->OnCollide();
                
         if(bTileHit)
         {

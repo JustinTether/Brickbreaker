@@ -30,6 +30,8 @@ add_executable(BrickBreaker
     main.h
     obj/Ball.h
     obj/BaseObject.h
+    obj/BaseBrick.h
+    obj/BaseBrick.cpp
     obj/Bat.h)
 
 if (${CMAKE_CXX_COMPILER} MATCHES ".*em[+][+]")

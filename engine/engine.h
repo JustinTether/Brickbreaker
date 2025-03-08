@@ -8,8 +8,7 @@ class Bat;
 class Ball;
 class MainMenuGUI;
 class PauseMenu;
-
-
+class BaseBrick;
 
 enum EGameState 
 {
@@ -28,7 +27,7 @@ class Engine : public olc::PixelGameEngine
       PauseMenu* PauseMenuObject;
       olc::QuickGUI::Manager GuiManager;
       olc::vi2d TileSize = {16, 16};
-      std::unique_ptr<int[]> Tiles;
+      std::vector<BaseBrick*> Bricks;
 
 
       olc::vf2d PotentialBallPos = olc::vf2d();

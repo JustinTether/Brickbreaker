@@ -4,6 +4,7 @@
 #include "../ui/MainMenu.h"
 #include "../ui/PauseMenu.h"
 #include "../lib/olcPGEX_QuickGUI.h"
+#include "../obj/BaseBrick.h"
 
 #define OLC_PGEX_SOUND_H
 
@@ -22,35 +23,52 @@ bool Engine::OnUserCreate()
 
   GuiManager.colNormal = olc::YELLOW;
 
-  TileSheet = std::make_unique<olc::Sprite>("./assets/sprites/tileset-01.png");
+  TileSheet = std::make_unique<olc::Sprite>("../assets/sprites/tileset-01.png");
 
-  // Initialize our tile grid
-  Tiles = std::make_unique<int[]>(MapWidth * MapHeight);
-
-  // Initialize the int array map with either 0 or 10, 10 being the boundary walls
+  // Initialize our bricks grid
   for (int y = 0; y < MapHeight; y++)
+  {
+    for (int x = 0; x < MapWidth; x++)
     {
-      for (int x = 0; x < MapWidth; x++)
-        {
-          if (x == 0 || y == 0 || x == MapWidth-1)
-            Tiles[y * MapWidth + x] = 10;
-          else
-            Tiles[y * MapWidth + x] = 0;
+      BaseBrick* NewBrick = new BaseBrick();
 
-          if (x > 2 && x <= 20 && y > 3 && y <= 5)
-            Tiles[y * MapWidth + x] = 1;
+      if(x == 0 || y == 0 || x == MapWidth-1)
+      {
+       NewBrick->bIsWall = true;
+      }
+      else
+      {
+        NewBrick->bIsAir = true;
+      }
+      
+      if (x > 2 && x <= 20 && y > 3 && y <= 5)
+      {
+        NewBrick->bIsAir = false;
+        NewBrick->TileOffset = 1;
+        NewBrick->MaxHits = 1;
+      }     
+      
+      if (x > 2 && x <= 20 && y > 5 && y <= 7)
+      {
+        NewBrick->bIsAir = false;
+        NewBrick->TileOffset = 2;
+        NewBrick->MaxHits = 2;
+      }
+      
+      if (x > 2 && x <= 20 && y > 7 && y <= 9)
+      {
+        NewBrick->bIsAir = false;
+        NewBrick->TileOffset = 3;
+        NewBrick->MaxHits = 3;
 
-          if (x > 2 && x <= 20 && y > 5 && y <= 7)
-            Tiles[y * MapWidth + x] = 2;
-
-          if (x > 2 && x <= 20 && y > 7 && y <= 9)
-            Tiles[y * MapWidth + x] = 3;
-
-        }
+      }
+      Bricks.push_back(NewBrick);
     }
+  }
 
-    return true;
+  return true;
 }
+
 
 bool Engine::OnUserUpdate(float fElapsedTime)
 {
@@ -111,26 +129,14 @@ bool Engine::OnUserUpdate(float fElapsedTime)
             {
                 for (int x = 0; x < MapWidth; x++)
                 {
-                    switch (Tiles[y * MapWidth + x])
-                    {
-                    case 0: // Do nothing
-                        break;
-                    case 10: // Draw Boundary
-                        DrawPartialSprite(olc::vi2d(x, y) * TileSize, TileSheet.get(), olc::vi2d(0, 0) * TileSize, TileSize);
-                        break;
+                    BaseBrick* NewBrick = Bricks[y * MapWidth + x];
+                    
+                    if(NewBrick->bIsAir)
+                      // Do nothing with air bricks, they're not rendered
+                      continue;
 
-                    case 1: 
-                        DrawPartialSprite(olc::vi2d(x, y) * TileSize, TileSheet.get(), olc::vi2d(1, 0) * TileSize, TileSize);
-                        break;
+                    DrawPartialSprite(olc::vi2d(x, y) * TileSize, TileSheet.get(), olc::vi2d(NewBrick->MaxHits, 0) * TileSize, TileSize);
 
-                    case 2: 
-                        DrawPartialSprite(olc::vi2d(x, y) * TileSize, TileSheet.get(), olc::vi2d(2, 0) * TileSize, TileSize);
-                        break;
-
-                    case 3: 
-                        DrawPartialSprite(olc::vi2d(x, y) * TileSize, TileSheet.get(), olc::vi2d(3, 0) * TileSize, TileSize);
-                        break;
-                    }
                 }
             }
             SetPixelMode(olc::Pixel::NORMAL);
