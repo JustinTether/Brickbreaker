@@ -3,8 +3,10 @@
 #include "../obj/Bat.h"
 #include "../ui/MainMenu.h"
 #include "../ui/PauseMenu.h"
+#include "../ui/Hud.h"
 #include "../lib/olcPGEX_QuickGUI.h"
 #include "../obj/BaseBrick.h"
+#include "GameState.h"
 
 #define OLC_PGEX_SOUND_H
 
@@ -17,10 +19,10 @@ bool Engine::OnUserCreate()
 {
   UserBat = new Bat(this);
   GameBall = new Ball(this);
-
   MainMenuObject = new MainMenuGUI();
   PauseMenuObject = new PauseMenu();
-
+  HudObject = new Hud();
+  GameState = new GameStateObject();
   GuiManager.colNormal = olc::YELLOW;
 
   TileSheet = std::make_unique<olc::Sprite>("../assets/sprites/tileset-01.png");
@@ -39,6 +41,7 @@ bool Engine::OnUserCreate()
       else
       {
         NewBrick->bIsAir = true;
+        NewBrick->bIsWall = false;
       }
       
       if (x > 2 && x <= 20 && y > 3 && y <= 5)
@@ -75,7 +78,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
     // Clear previous frame
     Clear(olc::BLACK);
     
-    switch(GameState)
+    switch(GameState->GetCurrentState())
     {
         case EGameState::MAIN_MENU:
             if (MainMenuObject && !MainMenuObject->bIsInitialized)
@@ -89,9 +92,8 @@ bool Engine::OnUserUpdate(float fElapsedTime)
             {
                 //AudioManager.PlayWaveform(MainMenuObject->ClickSound);
                 AudioManager.Toggle(MainMenuObject->ClickSound);
-                GameState = EGameState::GAME_LOOP;
+                GameState->SetCurrentState(EGameState::GAME_LOOP);
             }
-
             MainMenuObject->MainMenuManager.Draw(this);
             DrawString(ScreenWidth()/4, ScreenHeight()/2-20, "BrickBreaker", olc::WHITE, 2);
 
@@ -108,7 +110,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
           GuiManager.Update(this);
           if(PauseMenuObject->ResumeButton->bPressed || GetKey(olc::Key::ESCAPE).bPressed)
           {
-            GameState = EGameState::GAME_LOOP;
+            GameState->SetCurrentState(EGameState::GAME_LOOP);
             return true;
           }
 
@@ -117,32 +119,53 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
         case EGameState::GAME_LOOP:
         {
-            if(GetKey(olc::Key::ESCAPE).bPressed)
-            {
-              GameState = EGameState::PAUSED;
-              return true;
-            }
+          if (HudObject && !HudObject->bIsInitialized)
+          {
+            HudObject->Initialize(this);
+          }
 
-           // Draw the map
-            SetPixelMode(olc::Pixel::MASK); // Dont draw pixels which have any transparency
-            for (int y = 0; y < MapHeight; y++)
-            {
-                for (int x = 0; x < MapWidth; x++)
-                {
-                    BaseBrick* NewBrick = Bricks[y * MapWidth + x];
-                    
-                    if(NewBrick->bIsAir)
-                      // Do nothing with air bricks, they're not rendered
-                      continue;
+          // Update the HUD and draw it
+          HudObject->BallsRemainingNumber->sText = std::to_string(GameState->GetNumBallsRemaining());
+          HudObject->HudManager.Update(this);
+          HudObject->HudManager.Draw(this);
+          
 
-                    DrawPartialSprite(olc::vi2d(x, y) * TileSize, TileSheet.get(), olc::vi2d(NewBrick->MaxHits, 0) * TileSize, TileSize);
+          // if we're out of balls, end the game
+          if (GameState->GetNumBallsRemaining() < 0)
+          {
+            GameState->SetCurrentState(EGameState::END_GAME);
+            return true;
+          }
 
-                }
-            }
-            SetPixelMode(olc::Pixel::NORMAL);
+          if(GetKey(olc::Key::ESCAPE).bPressed)
+          {
+            GameState->SetCurrentState(EGameState::PAUSED);
+            return true;
+          }
 
-            UserBat->Tick(this, fElapsedTime);
-            GameBall->Tick(this, fElapsedTime);
+         // Draw the map
+          SetPixelMode(olc::Pixel::MASK); // Dont draw pixels which have any transparency
+          for (int y = 0; y < MapHeight; y++)
+          {
+              for (int x = 0; x < MapWidth; x++)
+              {
+                  BaseBrick* NewBrick = Bricks[y * MapWidth + x];
+                  
+                  if(NewBrick->bIsAir)
+                    // Do nothing with air bricks, they're not rendered
+                    continue;
+
+                  DrawPartialSprite(olc::vi2d(x, y) * TileSize, TileSheet.get(), olc::vi2d(NewBrick->MaxHits, 0) * TileSize, TileSize);
+
+              }
+          }
+          SetPixelMode(olc::Pixel::NORMAL);
+
+          UserBat->Tick(this, fElapsedTime);
+          GameBall->Tick(this, fElapsedTime);
+
+        // Draw round state
+        
             
         }break;
 
