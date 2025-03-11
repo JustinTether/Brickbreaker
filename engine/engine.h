@@ -4,27 +4,28 @@
 #include "../lib/olcPixelGameEngine.h"
 #include "../lib/olcPGEX_QuickGUI.h"
 #include "../lib/olcPGEX_MiniAudio.h"
+
 class Bat;
 class Ball;
 class MainMenuGUI;
 class PauseMenu;
 class BaseBrick;
+class Hud;
+class GameStateObject;
 
-enum EGameState 
-{
-    MAIN_MENU,
-    PAUSED,
-    GAME_LOOP,
-    END_ROUND,
-};
 
 class Engine : public olc::PixelGameEngine
 {
     public:
-
-      Ball* GameBall;
+     
+      // Menus
       MainMenuGUI* MainMenuObject;
       PauseMenu* PauseMenuObject;
+      Hud* HudObject;
+
+      Ball* GameBall;
+      Bat* UserBat;
+
       olc::QuickGUI::Manager GuiManager;
       olc::vi2d TileSize = {16, 16};
       std::vector<BaseBrick*> Bricks;
@@ -40,12 +41,9 @@ class Engine : public olc::PixelGameEngine
       // Audio Manager through MiniAudio
       olc::MiniAudio AudioManager;
 
-    public:
       Engine();
 
-      Bat* UserBat;
-      EGameState GameState = EGameState::MAIN_MENU;
-
+      GameStateObject* GameState;
 
     virtual bool OnUserCreate() override;
     virtual bool OnUserUpdate(float fElapsedTime) override;

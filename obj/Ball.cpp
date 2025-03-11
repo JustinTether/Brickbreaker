@@ -2,6 +2,8 @@
 #include "Ball.h"
 #include "../engine/engine.h"
 #include "BaseBrick.h"
+#include "Bat.h"
+#include "engine/GameState.h"
 Ball::Ball(Engine* Engine)
 {
     // Set initial ball position to the middle of the screen-ish
@@ -54,10 +56,11 @@ void Ball::Update(Engine* Engine, float DeltaTime)
     }
 }
 
-void Ball::ResetBall(olc::PixelGameEngine* Engine)
+void Ball::ResetBall(Engine* Engine)
 {
     // Set a random angle/velocity for the ball and reset to center of screen
     //float BallAngle = (float(rand()) / (float(RAND_MAX) * 2.0f) * 3.14169f);
+    Engine->GameState->SetNumBallsRemaining(Engine->GameState->GetNumBallsRemaining()-1);
     float BallAngle = -1.25f;
 
     BallVelocity = {static_cast<float>(BallSpeed * cos(BallAngle)), static_cast<float>(BallSpeed * sin(BallAngle))};
@@ -85,7 +88,7 @@ bool Ball::TestCollisionPoint(olc::vf2d point, Engine* Engine)
     else
     {
         // Ball has collided with a tile
-        bool bTileHit = !tile->bIsAir || !tile->bIsWall;
+        bool bTileHit = !tile->bIsAir && !tile->bIsWall;
         if (bTileHit) tile->OnCollide();
                
         if(bTileHit)

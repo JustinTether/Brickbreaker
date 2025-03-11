@@ -24,8 +24,12 @@ add_executable(BrickBreaker
     ui/MainMenu.h
     ui/PauseMenu.cpp
     ui/PauseMenu.h
+    ui/Hud.h
+    ui/Hud.cpp
     engine/engine.h
     engine/engine.cpp
+    engine/GameState.h
+    engine/GameState.cpp
     main.cpp
     main.h
     obj/Ball.h
