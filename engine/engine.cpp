@@ -5,6 +5,7 @@
 #include "../ui/PauseMenu.h"
 #include "../ui/Hud.h"
 #include "../lib/olcPGEX_QuickGUI.h"
+#include "Clay_Renderer_PGE.h"
 #include "../obj/BaseBrick.h"
 #include "GameState.h"
 
@@ -13,6 +14,11 @@
 Engine::Engine()
 {
   sAppName = "BrickBreaker";
+}
+
+void Engine::HandleClayErrors(Clay_ErrorData ErrorData)
+{
+  std::cout << ErrorData.errorText.chars << "\n";
 }
 
 bool Engine::OnUserCreate() 
@@ -24,8 +30,15 @@ bool Engine::OnUserCreate()
   HudObject = new Hud();
   GameState = new GameStateObject();
   GuiManager.colNormal = olc::YELLOW;
-
   TileSheet = std::make_unique<olc::Sprite>("../assets/sprites/tileset-01.png");
+
+  // Initialize Clay for use
+  ClayRenderer = new ClayPGERenderer();
+  uint64_t TotalClayMemory = Clay_MinMemorySize();
+  Clay_Arena Arena = Clay_CreateArenaWithCapacityAndMemory(TotalClayMemory, malloc(TotalClayMemory));
+  Clay_Initialize(Arena, (Clay_Dimensions){static_cast<float>(ScreenWidth()), static_cast<float>(ScreenHeight())}, (Clay_ErrorHandler){HandleClayErrors});
+  Clay_SetMeasureTextFunction(&ClayPGERenderer::MeasureText, nullptr);
+
 
   // Initialize our bricks grid
   for (int y = 0; y < MapHeight; y++)
@@ -94,8 +107,9 @@ bool Engine::OnUserUpdate(float fElapsedTime)
                 AudioManager.Toggle(MainMenuObject->ClickSound);
                 GameState->SetCurrentState(EGameState::GAME_LOOP);
             }
-            MainMenuObject->MainMenuManager.Draw(this);
-            DrawString(ScreenWidth()/4, ScreenHeight()/2-20, "BrickBreaker", olc::WHITE, 2);
+              MainMenuObject->Draw(this);
+            //MainMenuObject->MainMenuManager.Draw(this);
+            //DrawString(ScreenWidth()/4, ScreenHeight()/2-20, "BrickBreaker", olc::WHITE, 2);
 
         break;
 

@@ -6,4 +6,6 @@
 #include "lib/olcPGEX_QuickGUI.h"
 #include "engine/engine.h"
 
+#define CLAY_IMPLEMENTATION
+#include "lib/clay.h"
 int main();
