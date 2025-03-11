@@ -100,16 +100,13 @@ bool Engine::OnUserUpdate(float fElapsedTime)
                 return true;
             }
 
-            MainMenuObject->MainMenuManager.Update(this);
-            if (MainMenuObject->MainMenuStartButton->bPressed)
+            if (MainMenuObject->bIsStartButtonPressed)
             {
                 //AudioManager.PlayWaveform(MainMenuObject->ClickSound);
                 AudioManager.Toggle(MainMenuObject->ClickSound);
                 GameState->SetCurrentState(EGameState::GAME_LOOP);
             }
-              MainMenuObject->Draw(this);
-            //MainMenuObject->MainMenuManager.Draw(this);
-            //DrawString(ScreenWidth()/4, ScreenHeight()/2-20, "BrickBreaker", olc::WHITE, 2);
+            MainMenuObject->Draw(this);
 
         break;
 

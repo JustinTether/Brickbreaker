@@ -6,17 +6,8 @@
 
 void MainMenuGUI::Initialize(Engine* EngineInstance)
 {
-  MainMenuStartButton = new olc::QuickGUI::Button(MainMenuManager,
-    "Start",
-    { ((float)EngineInstance->ScreenWidth()/2) - MainMenuButtonWidth/2, (float)EngineInstance->ScreenHeight()/2 },
-    { MainMenuButtonWidth, MainMenuButtonHeight });
 
-  MainMenuManager.colNormal = olc::BLUE;
   ClickSound = EngineInstance->AudioManager.LoadSound("../assets/sounds/click3.wav");
-
-  //MainMenuText = new olc::QuickGUI::Label(GuiManager, "BrickBreaker", {Engine->ScreenWidth()/2-50, Engine->ScreenHeight()/2-60}, {100.0f, 50.0f}); 
-
-  //MainMenuText->bHasBorder = true;
   ClayRenderer = new ClayPGERenderer();
   bIsInitialized = true;
 }
@@ -45,12 +36,35 @@ void MainMenuGUI::Draw(Engine* Engine)
       .id = CLAY_ID("Inner Container"),
       .layout = {.sizing = {.width = CLAY_SIZING_FIXED(150), .height = CLAY_SIZING_FIXED(150)},
       .padding = CLAY_PADDING_ALL(5),
+      .childGap = 10,
       .childAlignment = {.x = CLAY_ALIGN_X_CENTER, .y = CLAY_ALIGN_Y_CENTER},
       .layoutDirection = CLAY_TOP_TO_BOTTOM},
-      .backgroundColor = {(float)olc::BLUE.r, (float)olc::BLUE.g, (float)olc::BLUE.b, (float)olc::BLUE.a}
+      .backgroundColor = {(float)olc::BLUE.r, (float)olc::BLUE.g, (float)olc::BLUE.b, (float)olc::BLUE.a},
+      .border = {.color = {(float)olc::WHITE.r, (float)olc::WHITE.g, (float)olc::WHITE.b}, .width = {.left = 2, .right = 2, .top = 2, .bottom = 2}}
     })
     {
       CLAY_TEXT(CLAY_STRING("BrickBreaker"), CLAY_TEXT_CONFIG({.textColor = {(float)olc::WHITE.r, (float)olc::WHITE.g, (float)olc::WHITE.b, (float)olc::WHITE.a}, .fontSize = 32}));
+      CLAY({
+        .id = CLAY_ID("StartButton"),
+        .layout = {.sizing = {.width = CLAY_SIZING_FIXED(50), .height = CLAY_SIZING_FIXED(25)},
+        .childAlignment = {.x = CLAY_ALIGN_X_CENTER, .y = CLAY_ALIGN_Y_CENTER},
+        .layoutDirection = CLAY_TOP_TO_BOTTOM},
+        .backgroundColor = {(float)olc::GREY.r, (float)olc::GREY.g, (float)olc::GREY.b, (float)olc::GREY.a},
+        .border = {.color = {(float)olc::WHITE.r, (float)olc::WHITE.g, (float)olc::WHITE.b}, .width = {.left = 2, .right = 2, .top = 2, .bottom = 2}}
+
+      })
+      {
+        CLAY_TEXT(CLAY_STRING("Start"), CLAY_TEXT_CONFIG({.textColor = {(float)olc::WHITE.r, (float)olc::WHITE.g, (float)olc::WHITE.b, (float)olc::WHITE.a}, .fontSize = 32}));
+
+        // Handle Mouse clicking the Resume button
+        if(Engine->GetMouse(0).bPressed && Clay_PointerOver(CLAY_ID("StartButton")))
+        {
+          bIsStartButtonPressed = true;
+        }
+        else
+          bIsStartButtonPressed = false;
+
+      };
     }
   };
 

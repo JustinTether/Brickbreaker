@@ -15,8 +15,8 @@ public:
     // Clay_TextElementConfig contains members such as fontId, fontSize, letterSpacing etc
     // Note: Clay_String->chars is not guaranteed to be null terminated
     return (Clay_Dimensions) {
-            .width = static_cast<float>(Text.length * Config->fontSize), // <- this will only work for monospace fonts, see the renderers/ directory for more advanced text measurement
-            .height = static_cast<float>(Config->fontSize)
+            .width = static_cast<float>(Text.length * 8), // <- this will only work for monospace fonts, see the renderers/ directory for more advanced text measurement
+            .height = static_cast<float>(8)
     };
   }
 
