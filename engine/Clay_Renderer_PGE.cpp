@@ -1,8 +1,9 @@
 #include "Clay_Renderer_PGE.h"
 #include "../lib/olcPixelGameEngine.h"
 
-#define ClayColorToPixel(Clay_Color) (olc::Pixel) {olc::Pixel(Clay_Color->r, Clay_Color->g, Clay_Color->b)}
-
+Clay_Color COLOR_GREY = {(float)olc::GREY.r, (float)olc::GREY.g, (float)olc::GREY.b, (float)olc::GREY.a};
+Clay_Color COLOR_DARKGREY = {(float)olc::DARK_GREY.r, (float)olc::DARK_GREY.g, (float)olc::DARK_GREY.b, (float)olc::DARK_GREY.a};
+Clay_Color COLOR_WHITE = {(float)olc::WHITE.r, (float)olc::WHITE.g, (float)olc::WHITE.b, (float)olc::WHITE.a};
 
 void ClayPGERenderer::Clay_PGE_Render(Clay_RenderCommandArray RenderCommands, olc::PixelGameEngine* Engine)
 {

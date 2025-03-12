@@ -6,6 +6,11 @@
 #include "stdio.h"
 #include "stdlib.h"
 
+#define ClayColorToPixel(Clay_Color) (olc::Pixel) {olc::Pixel(Clay_Color->r, Clay_Color->g, Clay_Color->b)}
+#define PixelToClayColor(Pixel) (Clay_Color) {.r = (float)(Pixel.r), .g = (float)(Pixel.g), .b = (float)(Pixel.b), .a = (float)(Pixel.a)}
+
+
+
 class ClayPGERenderer
 {
 public:
