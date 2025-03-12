@@ -32,8 +32,7 @@ void MainMenuGUI::Draw(Engine* Engine)
 
   }) {
 
-    CLAY_TEXT(CLAY_STRING("BrickBreaker"), CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE), .fontSize = 32}));
-    
+    CLAY_TEXT(CLAY_STRING("BrickBreaker"), CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE), .fontSize = 24})); 
     CLAY({
       .id = CLAY_ID("Inner Container"),
       .layout = {.sizing = {.width = CLAY_SIZING_FIT(0), .height = CLAY_SIZING_FIT(0)},
@@ -41,7 +40,7 @@ void MainMenuGUI::Draw(Engine* Engine)
       .childGap = 10,
       .childAlignment = {.x = CLAY_ALIGN_X_CENTER, .y = CLAY_ALIGN_Y_CENTER},
       .layoutDirection = CLAY_TOP_TO_BOTTOM},
-      .backgroundColor = PixelToClayColor(olc::BLUE),
+      .backgroundColor = PixelToClayColor(olc::DARK_BLUE),
       .border = {.color = PixelToClayColor(olc::WHITE), .width = {.left = 1, .right = 1, .top = 1, .bottom = 1}}
     })
     {
@@ -55,7 +54,7 @@ void MainMenuGUI::Draw(Engine* Engine)
 
       })
       {
-        CLAY_TEXT(CLAY_STRING("Start"), CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE), .fontSize = 32}));
+        CLAY_TEXT(CLAY_STRING("Start"), CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE), .fontSize = 8}));
 
         // Handle Mouse clicking the Start button
         if(Engine->GetMouse(0).bPressed && Clay_PointerOver(CLAY_ID("StartButton")))
@@ -76,7 +75,7 @@ void MainMenuGUI::Draw(Engine* Engine)
 
       })
       {
-        CLAY_TEXT(CLAY_STRING("Quit"), CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE), .fontSize = 32}));
+        CLAY_TEXT(CLAY_STRING("Quit"), CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE), .fontSize = 8}));
 
       };
     }

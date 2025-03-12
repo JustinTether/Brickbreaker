@@ -19,7 +19,7 @@ void ClayPGERenderer::Clay_PGE_Render(Clay_RenderCommandArray RenderCommands, ol
         Clay_TextRenderData* TextData = &RenderCommand->renderData.text;
         Clay_Color* ColorData = &RenderCommand->renderData.text.textColor;
 
-        Engine->DrawString(BoundingBox.x, BoundingBox.y, std::string(TextData->stringContents.chars), ClayColorToPixel(ColorData));
+        Engine->DrawString(BoundingBox.x, BoundingBox.y, std::string(TextData->stringContents.chars), ClayColorToPixel(ColorData), TextData->fontSize/8);
         break;
       }
 
