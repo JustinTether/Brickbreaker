@@ -113,19 +113,17 @@ bool Engine::OnUserUpdate(float fElapsedTime)
         case EGameState::PAUSED:
           if(PauseMenuObject && !PauseMenuObject->bIsInitialized)
           {
-            GuiManager = olc::QuickGUI::Manager();
-            PauseMenuObject->Initialize(this, GuiManager);
+            PauseMenuObject->Initialize(this);
             return true;
           }
 
-          GuiManager.Update(this);
-          if(PauseMenuObject->ResumeButton->bPressed || GetKey(olc::Key::ESCAPE).bPressed)
+          if(PauseMenuObject->bIsResumeButtonClicked || GetKey(olc::Key::ESCAPE).bPressed)
           {
             GameState->SetCurrentState(EGameState::GAME_LOOP);
             return true;
           }
 
-          GuiManager.Draw(this);
+          PauseMenuObject->Draw(this);
         break;
 
         case EGameState::GAME_LOOP:
