@@ -1,5 +1,5 @@
 #include "Clay_Renderer_PGE.h"
-#include "../lib/olcPixelGameEngine.h"
+#include <string>
 
 Clay_Color COLOR_GREY = {(float)olc::GREY.r, (float)olc::GREY.g, (float)olc::GREY.b, (float)olc::GREY.a};
 Clay_Color COLOR_DARKGREY = {(float)olc::DARK_GREY.r, (float)olc::DARK_GREY.g, (float)olc::DARK_GREY.b, (float)olc::DARK_GREY.a};
@@ -37,6 +37,7 @@ void ClayPGERenderer::Clay_PGE_Render(Clay_RenderCommandArray RenderCommands, ol
         Clay_ImageRenderData* ImageRenderData = &RenderCommand->renderData.image;
         olc::Sprite* InSprite = (olc::Sprite*)ImageRenderData->imageData;
         Engine->DrawSprite(BoundingBox.x, BoundingBox.y, InSprite);
+        break;
       }
 
       case CLAY_RENDER_COMMAND_TYPE_BORDER:
@@ -71,10 +72,11 @@ void ClayPGERenderer::Clay_PGE_Render(Clay_RenderCommandArray RenderCommands, ol
                          BoundingBox.width + BorderRenderData->width.left + BorderRenderData->width.right, 
                          BorderRenderData->width.bottom, 
                          ClayColorToPixel(ColorData));
+        break;
       }
       default:
       {
-        std::cout << "Unhandled Render Command\n";
+        std::cout << "Unhandled Render Command" << "\n";
         break;
       }
 
