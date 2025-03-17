@@ -17,6 +17,7 @@ add_executable(BrickBreaker
     lib/olcPixelGameEngine.h
     lib/miniaudio.h
     lib/olcPGEX_MiniAudio.h
+    lib/clay.h
     obj/Ball.cpp
     obj/BaseObject.cpp
     obj/Bat.cpp
@@ -30,6 +31,8 @@ add_executable(BrickBreaker
     engine/engine.cpp
     engine/GameState.h
     engine/GameState.cpp
+    engine/Clay_Renderer_PGE.h
+    engine/Clay_Renderer_PGE.cpp
     main.cpp
     main.h
     obj/Ball.h

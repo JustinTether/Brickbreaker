@@ -1,14 +1,13 @@
 #include "../lib/olcPixelGameEngine.h"
-#include "../lib/olcPGEX_QuickGUI.h"
+#include "engine/engine.h"
 
 class Engine;
 
 class PauseMenu
 {
 public:
-  olc::QuickGUI::Button* ResumeButton;
-  olc::QuickGUI::Label* PauseLabel;
-
-  void Initialize(Engine* Engine, olc::QuickGUI::Manager& GuiManager);
+  void Initialize(Engine* Engine); 
+  void Draw(Engine* Engine);
   bool bIsInitialized = false;
+  bool bIsResumeButtonClicked = false;
 };

@@ -4,7 +4,7 @@
 #include "../lib/olcPixelGameEngine.h"
 #include "../lib/olcPGEX_QuickGUI.h"
 #include "../lib/olcPGEX_MiniAudio.h"
-
+#include "../lib/clay.h"
 class Bat;
 class Ball;
 class MainMenuGUI;
@@ -12,7 +12,7 @@ class PauseMenu;
 class BaseBrick;
 class Hud;
 class GameStateObject;
-
+class ClayPGERenderer;
 
 class Engine : public olc::PixelGameEngine
 {
@@ -22,6 +22,7 @@ class Engine : public olc::PixelGameEngine
       MainMenuGUI* MainMenuObject;
       PauseMenu* PauseMenuObject;
       Hud* HudObject;
+      ClayPGERenderer* ClayRenderer;
 
       Ball* GameBall;
       Bat* UserBat;
@@ -48,6 +49,7 @@ class Engine : public olc::PixelGameEngine
     virtual bool OnUserCreate() override;
     virtual bool OnUserUpdate(float fElapsedTime) override;
     bool TestResolveCollisionPoint(const olc::vf2d& point);
+    static void HandleClayErrors(Clay_ErrorData ErrorData);
     int main();
 
 };

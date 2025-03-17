@@ -9,6 +9,6 @@ int main()
 {
 	Engine demo;
 	if (demo.Construct(demo.MapWidth * demo.TileSize.x, demo.MapHeight * demo.TileSize.y, 2, 2))
-		demo.Start();
+    demo.Start();
 	return 0;
 }

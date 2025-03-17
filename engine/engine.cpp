@@ -5,6 +5,7 @@
 #include "../ui/PauseMenu.h"
 #include "../ui/Hud.h"
 #include "../lib/olcPGEX_QuickGUI.h"
+#include "Clay_Renderer_PGE.h"
 #include "../obj/BaseBrick.h"
 #include "GameState.h"
 
@@ -13,6 +14,11 @@
 Engine::Engine()
 {
   sAppName = "BrickBreaker";
+}
+
+void Engine::HandleClayErrors(Clay_ErrorData ErrorData)
+{
+  std::cout << ErrorData.errorText.chars << "\n";
 }
 
 bool Engine::OnUserCreate() 
@@ -24,8 +30,15 @@ bool Engine::OnUserCreate()
   HudObject = new Hud();
   GameState = new GameStateObject();
   GuiManager.colNormal = olc::YELLOW;
-
   TileSheet = std::make_unique<olc::Sprite>("../assets/sprites/tileset-01.png");
+
+  // Initialize Clay for use
+  ClayRenderer = new ClayPGERenderer();
+  uint64_t TotalClayMemory = Clay_MinMemorySize();
+  Clay_Arena Arena = Clay_CreateArenaWithCapacityAndMemory(TotalClayMemory, malloc(TotalClayMemory));
+  Clay_Initialize(Arena, (Clay_Dimensions){static_cast<float>(ScreenWidth()), static_cast<float>(ScreenHeight())}, (Clay_ErrorHandler){HandleClayErrors});
+  Clay_SetMeasureTextFunction(&ClayPGERenderer::MeasureText, nullptr);
+
 
   // Initialize our bricks grid
   for (int y = 0; y < MapHeight; y++)
@@ -87,34 +100,31 @@ bool Engine::OnUserUpdate(float fElapsedTime)
                 return true;
             }
 
-            MainMenuObject->MainMenuManager.Update(this);
-            if (MainMenuObject->MainMenuStartButton->bPressed)
+            if (MainMenuObject->bIsStartButtonPressed)
             {
                 //AudioManager.PlayWaveform(MainMenuObject->ClickSound);
                 AudioManager.Toggle(MainMenuObject->ClickSound);
                 GameState->SetCurrentState(EGameState::GAME_LOOP);
             }
-            MainMenuObject->MainMenuManager.Draw(this);
-            DrawString(ScreenWidth()/4, ScreenHeight()/2-20, "BrickBreaker", olc::WHITE, 2);
+            MainMenuObject->Draw(this);
 
         break;
 
         case EGameState::PAUSED:
           if(PauseMenuObject && !PauseMenuObject->bIsInitialized)
           {
-            GuiManager = olc::QuickGUI::Manager();
-            PauseMenuObject->Initialize(this, GuiManager);
+            PauseMenuObject->Initialize(this);
             return true;
           }
 
-          GuiManager.Update(this);
-          if(PauseMenuObject->ResumeButton->bPressed || GetKey(olc::Key::ESCAPE).bPressed)
+          if(PauseMenuObject->bIsResumeButtonClicked || GetKey(olc::Key::ESCAPE).bPressed)
           {
+            PauseMenuObject->bIsResumeButtonClicked = false;
             GameState->SetCurrentState(EGameState::GAME_LOOP);
             return true;
           }
 
-          GuiManager.Draw(this);
+          PauseMenuObject->Draw(this);
         break;
 
         case EGameState::GAME_LOOP:
@@ -125,9 +135,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
           }
 
           // Update the HUD and draw it
-          HudObject->BallsRemainingNumber->sText = std::to_string(GameState->GetNumBallsRemaining());
-          HudObject->HudManager.Update(this);
-          HudObject->HudManager.Draw(this);
+          HudObject->Draw(this);
           
 
           // if we're out of balls, end the game
