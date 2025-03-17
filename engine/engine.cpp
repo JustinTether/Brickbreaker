@@ -119,6 +119,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
           if(PauseMenuObject->bIsResumeButtonClicked || GetKey(olc::Key::ESCAPE).bPressed)
           {
+            PauseMenuObject->bIsResumeButtonClicked = false;
             GameState->SetCurrentState(EGameState::GAME_LOOP);
             return true;
           }
@@ -134,9 +135,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
           }
 
           // Update the HUD and draw it
-          HudObject->BallsRemainingNumber->sText = std::to_string(GameState->GetNumBallsRemaining());
-          HudObject->HudManager.Update(this);
-          HudObject->HudManager.Draw(this);
+          HudObject->Draw(this);
           
 
           // if we're out of balls, end the game

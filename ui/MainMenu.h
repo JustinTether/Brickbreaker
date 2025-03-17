@@ -9,7 +9,6 @@ class MainMenuGUI
 public:
   // ID reference for the click sound
   int ClickSound;
-  ClayPGERenderer* ClayRenderer;
   float MainMenuButtonWidth = 100.f;
   float MainMenuButtonHeight = 16.0f;
   

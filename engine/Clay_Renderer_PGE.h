@@ -11,7 +11,8 @@
 class ClayPGERenderer
 {
 public:
-  void Clay_PGE_Render(Clay_RenderCommandArray RenderCommands, olc::PixelGameEngine* Engine);
+  static void HandleClayRenderCommands(Clay_RenderCommandArray RenderCommands, olc::PixelGameEngine* Engine);
+  static void UpdateClayState(olc::PixelGameEngine* Engine);
   static inline Clay_Dimensions MeasureText(Clay_StringSlice Text, Clay_TextElementConfig* Config, void* UserData)
   {
     // Clay_TextElementConfig contains members such as fontId, fontSize, letterSpacing etc

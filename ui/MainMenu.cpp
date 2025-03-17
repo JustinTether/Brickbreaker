@@ -8,17 +8,13 @@ void MainMenuGUI::Initialize(Engine* EngineInstance)
 {
 
   ClickSound = EngineInstance->AudioManager.LoadSound("../assets/sounds/click3.wav");
-  ClayRenderer = new ClayPGERenderer();
   bIsInitialized = true;
 }
 
 void MainMenuGUI::Draw(Engine* Engine)
 {
   // Initializing Clay state
-  Clay_SetLayoutDimensions((Clay_Dimensions){static_cast<float>(Engine->ScreenWidth()), static_cast<float>(Engine->ScreenHeight())});
-  Clay_SetPointerState((Clay_Vector2){static_cast<float>(Engine->GetMouseX()), static_cast<float>(Engine->GetMouseY())}, Engine->GetMouse(0).bPressed);
-  Clay_UpdateScrollContainers(true, Clay_Vector2(0, Engine->GetMouseWheel()), Engine->GetElapsedTime());
-
+  ClayPGERenderer::UpdateClayState(Engine);  
   Clay_BeginLayout();
 
   CLAY({
@@ -86,5 +82,5 @@ void MainMenuGUI::Draw(Engine* Engine)
 
   Clay_SetDebugModeEnabled(bDebugClay);
   Clay_RenderCommandArray RenderCommands = Clay_EndLayout();
-  ClayRenderer->Clay_PGE_Render(RenderCommands, Engine);
+  ClayPGERenderer::HandleClayRenderCommands(RenderCommands, Engine);
 }

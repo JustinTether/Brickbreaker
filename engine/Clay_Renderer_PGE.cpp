@@ -2,7 +2,7 @@
 #include <string>
 
 
-void ClayPGERenderer::Clay_PGE_Render(Clay_RenderCommandArray RenderCommands, olc::PixelGameEngine* Engine)
+void ClayPGERenderer::HandleClayRenderCommands(Clay_RenderCommandArray RenderCommands, olc::PixelGameEngine* Engine)
 {
   for (int j = 0; j < RenderCommands.length; j++)
   {
@@ -84,3 +84,10 @@ void ClayPGERenderer::Clay_PGE_Render(Clay_RenderCommandArray RenderCommands, ol
 
 
 };
+
+void ClayPGERenderer::UpdateClayState(olc::PixelGameEngine* Engine)
+{
+  Clay_SetLayoutDimensions((Clay_Dimensions){static_cast<float>(Engine->ScreenWidth()), static_cast<float>(Engine->ScreenHeight())});
+  Clay_SetPointerState((Clay_Vector2){static_cast<float>(Engine->GetMouseX()), static_cast<float>(Engine->GetMouseY())}, Engine->GetMouse(0).bPressed);
+  Clay_UpdateScrollContainers(true, Clay_Vector2(0, Engine->GetMouseWheel()), Engine->GetElapsedTime());
+}
