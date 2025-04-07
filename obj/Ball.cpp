@@ -45,6 +45,22 @@ void Ball::Update(Engine* Engine, float DeltaTime)
       if (ModifiedBallPosition.x > BatPosition && ModifiedBallPosition.x < BatPosition + Engine->UserBat->BatWidth)
       {
         BallVelocity.y *= -1.0;
+        
+        // Change X based on where the ball hit
+        // Grab the 'HitPosition' of the ball, 0 for far left edge, 1 for far right edge
+        float HitPosition = ((BallPosition.x * Engine->TileSize.x) - BatPosition) / Engine->UserBat->BatWidth;
+
+        // Create an angle multiplier based off of this position -0.5 so that the modified position is between -0.5 and +0.5, POW'd
+        float AngleMultiplier = pow((HitPosition - 0.5f) * 2.0f, 3);
+        
+        // Calculate a new angle in Radians so that the sin/cos functions work
+        float MaxAngle = 60.0f;
+        float AngleRadians = (MaxAngle * AngleMultiplier) * (M_PI / 180.0f);
+        
+        float Speed = sqrt(BallVelocity.x * BallVelocity.x + BallVelocity.y * BallVelocity.y);
+        BallVelocity.x = Speed * sin(AngleRadians);
+        BallVelocity.y = -Speed * cos(AngleRadians);
+
       }
     }
 

@@ -21,6 +21,8 @@ add_executable(BrickBreaker
     obj/Ball.cpp
     obj/BaseObject.cpp
     obj/Bat.cpp
+    obj/upgrades/BaseUpgrade.cpp
+    obj/upgrades/BaseUpgrade.h
     ui/MainMenu.cpp
     ui/MainMenu.h
     ui/PauseMenu.cpp
