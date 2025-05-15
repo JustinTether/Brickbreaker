@@ -2,6 +2,8 @@
 #include "BaseObject.h"
 #include "../lib/olcPixelGameEngine.h"
 
+class Engine;
+
 class Bat : public BaseObject
 {
   public:

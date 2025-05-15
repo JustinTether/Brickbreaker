@@ -23,6 +23,8 @@ add_executable(BrickBreaker
     obj/Bat.cpp
     obj/upgrades/BaseUpgrade.cpp
     obj/upgrades/BaseUpgrade.h
+    obj/upgrades/IncreaseBatWidth.h
+    obj/upgrades/IncreaseBatWidth.cpp
     ui/MainMenu.cpp
     ui/MainMenu.h
     ui/PauseMenu.cpp

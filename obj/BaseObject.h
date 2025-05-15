@@ -5,7 +5,8 @@
 #ifndef BASEOBJECT_H
 #define BASEOBJECT_H
 #include "../lib/olcPixelGameEngine.h"
-#include "../engine/engine.h"
+
+class Engine;
 
 class BaseObject
 {
@@ -15,8 +16,9 @@ public:
     BaseObject();
     virtual void Draw(Engine* Engine);
     virtual void Update(Engine* Engine, float DeltaTime);
-
-    void Tick(Engine* Engine, float DeltaTime);
+    
+    bool bShouldBeGCd = false;
+    virtual void Tick(Engine* Engine, float DeltaTime);
 };
 
 

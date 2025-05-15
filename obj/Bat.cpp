@@ -1,5 +1,6 @@
 #pragma once
 #include "Bat.h"
+#include "engine/engine.h"
 
 
 Bat::Bat(olc::PixelGameEngine* Engine)

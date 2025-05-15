@@ -36,19 +36,26 @@ void Ball::Update(Engine* Engine, float DeltaTime)
     bHasHitTile |= TestCollisionPoint(olc::vf2d(+1, 0), Engine);	
     
     olc::vf2d ModifiedBallPosition = BallPosition * Engine->TileSize;
-    float BatPosition = Engine->UserBat->BatPosition;
+
+    Bat* UserBat = Engine->GetGameObjectOfType<Bat>();
+    if(!UserBat)
+    {
+      return;
+    }
+
+    float BatPosition = UserBat->BatPosition;
 
     // Check if modified ball position is at the same y level as the paddle
-    if (ModifiedBallPosition.y >= (Engine->ScreenHeight()-20) - Engine->UserBat->BatHeight)
+    if (ModifiedBallPosition.y >= (Engine->ScreenHeight()-20) - UserBat->BatHeight)
     {
       // Check if the modified position is at the same x offset
-      if (ModifiedBallPosition.x > BatPosition && ModifiedBallPosition.x < BatPosition + Engine->UserBat->BatWidth)
+      if (ModifiedBallPosition.x > BatPosition && ModifiedBallPosition.x < BatPosition + UserBat->BatWidth)
       {
         BallVelocity.y *= -1.0;
         
         // Change X based on where the ball hit
         // Grab the 'HitPosition' of the ball, 0 for far left edge, 1 for far right edge
-        float HitPosition = ((BallPosition.x * Engine->TileSize.x) - BatPosition) / Engine->UserBat->BatWidth;
+        float HitPosition = ((BallPosition.x * Engine->TileSize.x) - BatPosition) / UserBat->BatWidth;
 
         // Create an angle multiplier based off of this position -0.5 so that the modified position is between -0.5 and +0.5, POW'd
         float AngleMultiplier = pow((HitPosition - 0.5f) * 2.0f, 3);
