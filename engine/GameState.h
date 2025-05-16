@@ -18,7 +18,7 @@ public:
   GameStateObject();
 
 protected:
-  int NumBallsRemaining;
+  int NumBallsRemaining = 0;
   EGameState CurrentGameState;
 
 public:
