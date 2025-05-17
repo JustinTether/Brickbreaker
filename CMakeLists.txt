@@ -64,6 +64,7 @@ find_package(PNG REQUIRED)
 include_directories(${PNG_INCLUDE_DIR})
 target_link_libraries(BrickBreaker PRIVATE ${PNG_LIBRARIES})
 
+#[===[
 message(STATUS "looking for GL...")
 find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR})

@@ -8,6 +8,7 @@ endif()
 if (PGE_USE_EMSCRIPTEN)
     # Compile to HTML5
     set(CMAKE_EXECUTABLE_SUFFIX .html)
+    # find_package(Emscripten REQUIRED)
 endif()
 
 
@@ -29,7 +30,7 @@ function(pge_set_emscripten_options project_name)
     if (PGE_USE_EMSCRIPTEN)
         set(PGE_LINKER_OPTIONS -sALLOW_MEMORY_GROWTH=1 -sSTACK_SIZE=131072 -sMAX_WEBGL_VERSION=2 -sMIN_WEBGL_VERSION=2 -sUSE_LIBPNG=1 --emrun)
         target_link_options(${project_name} PRIVATE -sEXCEPTION_CATCHING_ALLOWED=[compile+link])
-
+        target_link_options(${project_name} PRIVATE -sEXPORTED_RUNTIME_METHODS=["HEAPF32"])
         if (PGE_INCLUDE_ASSETS)
       target_link_options(${project_name} PRIVATE ${PGE_LINKER_OPTIONS} --preload-file ${PGE_ASSET_FOLDER})
         else()
@@ -41,9 +42,10 @@ function(pge_set_emscripten_options project_name)
         else()
           target_link_options(${project_name} PRIVATE --shell-file ${CMAKE_SOURCE_DIR}/cmake/template.html)
         endif()
+
     else()
         if (UNIX)
-      target_link_libraries(${project_name} PRIVATE -lX11 -lGL -lpthread -lpng -lstdc++fs -ldl)
+      target_link_libraries(${project_name} PRIVATE -lX11 -lGL -lpthread -lpng -lstdc++fs -ldl -lm -lstdc++)
         endif (UNIX)
     endif()
 endfunction()
