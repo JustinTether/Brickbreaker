@@ -1,7 +1,6 @@
 
 if (${CMAKE_CXX_COMPILER} MATCHES ".*em[+][+]")
     set(PGE_USE_EMSCRIPTEN TRUE)
-    message("use emscripten true")
 else()
     set(PGE_USE_EMSCRIPTEN FALSE)
 endif()
@@ -44,7 +43,6 @@ function(pge_set_emscripten_options project_name)
           target_link_options(${project_name} PRIVATE --shell-file ${CMAKE_SOURCE_DIR}/cmake/template.html)
         endif()
 
-        # target_link_libraries(${project_name} PRIVATE emscripten::libpng)
     else()
         if (UNIX)
       target_link_libraries(${project_name} PRIVATE -lX11 -lGL -lpthread -lpng -lstdc++fs -ldl -lm -lstdc++)
