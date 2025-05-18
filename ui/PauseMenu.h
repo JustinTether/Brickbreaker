@@ -6,7 +6,8 @@ class Engine;
 class PauseMenu
 {
 public:
-  void Initialize(Engine* Engine); 
+  int ClickSound;
+  void Initialize(Engine* Engine);
   void Draw(Engine* Engine);
   bool bIsInitialized = false;
   bool bIsResumeButtonClicked = false;

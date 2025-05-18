@@ -1,14 +1,15 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 #pragma once
-#include "../lib/olcPixelGameEngine.h"
-#include "../lib/olcPGEX_QuickGUI.h"
-#include "../lib/olcPGEX_MiniAudio.h"
 #include "../lib/clay.h"
+#include "../lib/olcPGEX_MiniAudio.h"
+#include "../lib/olcPGEX_QuickGUI.h"
+#include "../lib/olcPixelGameEngine.h"
 #include "obj/BaseObject.h"
 class Bat;
 class Ball;
 class MainMenuGUI;
+class GameOverGUI;
 class PauseMenu;
 class BaseBrick;
 class Hud;
@@ -19,56 +20,54 @@ class BaseObject;
 
 class Engine : public olc::PixelGameEngine
 {
-    public:
-     
-      // Menus
-      MainMenuGUI* MainMenuObject;
-      PauseMenu* PauseMenuObject;
-      Hud* HudObject;
-      ClayPGERenderer* ClayRenderer;
+public:
+  // Menus
+  MainMenuGUI* MainMenuObject;
+  PauseMenu* PauseMenuObject;
+  GameOverGUI* GameOverMenuObject;
+  Hud* HudObject;
+  ClayPGERenderer* ClayRenderer;
 
-      olc::QuickGUI::Manager GuiManager;
-      olc::vi2d TileSize = {16, 16};
-      std::vector<BaseBrick*> Bricks;
-      
-      olc::vf2d PotentialBallPos = olc::vf2d();
-      olc::vf2d TileBallRadialDims = olc::vf2d();
-      int MapWidth = 24;
-      int MapHeight = 30;
+  olc::QuickGUI::Manager GuiManager;
+  olc::vi2d TileSize = {16, 16};
+  std::vector<BaseBrick*> Bricks;
 
-      std::unique_ptr<olc::Sprite> TileSheet;
-      
-      // Audio Manager through MiniAudio
-      olc::MiniAudio AudioManager;
+  olc::vf2d PotentialBallPos = olc::vf2d();
+  olc::vf2d TileBallRadialDims = olc::vf2d();
+  int MapWidth = 24;
+  int MapHeight = 30;
 
-      Engine();
+  std::unique_ptr<olc::Sprite> TileSheet;
 
-      GameStateObject* GameState;
+  // Audio Manager through MiniAudio
+  olc::MiniAudio AudioManager;
 
-    virtual bool OnUserCreate() override;
-    virtual bool OnUserUpdate(float fElapsedTime) override;
-    bool TestResolveCollisionPoint(const olc::vf2d& point);
-    static void HandleClayErrors(Clay_ErrorData ErrorData);
+  Engine();
 
-  template<class T>
-  T* GetGameObjectOfType()
+  GameStateObject* GameState;
+
+  virtual bool OnUserCreate() override;
+  virtual bool OnUserUpdate(float fElapsedTime) override;
+  bool TestResolveCollisionPoint(const olc::vf2d& point);
+  static void HandleClayErrors(Clay_ErrorData ErrorData);
+
+  template <class T> T* GetGameObjectOfType()
   {
     for (std::shared_ptr<BaseObject> Obj : GameObjects)
     {
 
-      if(std::shared_ptr CastedObject = std::static_pointer_cast<T>(Obj))
+      if (std::shared_ptr CastedObject = std::static_pointer_cast<T>(Obj))
       {
         return CastedObject.get();
       }
-
     }
-
   }
 
-    int main();
+  int main();
+
 private:
   std::vector<std::shared_ptr<BaseObject>> GameObjects;
   void GCObjects();
+  void InitializeGameState();
 };
 #endif
-
