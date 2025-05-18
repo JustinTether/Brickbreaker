@@ -2,15 +2,14 @@
 
 class Engine;
 
-enum EGameState 
+enum EGameState
 {
-    MAIN_MENU,
-    PAUSED,
-    GAME_LOOP,
-    END_ROUND,
-    END_GAME
+  MAIN_MENU,
+  PAUSED,
+  GAME_LOOP,
+  END_ROUND,
+  END_GAME
 };
-
 
 class GameStateObject
 {
@@ -26,4 +25,6 @@ public:
   EGameState GetCurrentState();
   int GetNumBallsRemaining();
   void SetNumBallsRemaining(int Num);
+  bool IsGameOver();
+  void ResetGame();
 };

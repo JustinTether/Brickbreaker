@@ -6,22 +6,17 @@ GameStateObject::GameStateObject()
   NumBallsRemaining = 3;
 }
 
-EGameState GameStateObject::GetCurrentState()
-{
-  return CurrentGameState;
-}
+void GameStateObject::ResetGame() { NumBallsRemaining = 3; }
+
+EGameState GameStateObject::GetCurrentState() { return CurrentGameState; }
+
+int GameStateObject::GetNumBallsRemaining() { return NumBallsRemaining; }
+
+void GameStateObject::SetNumBallsRemaining(int Num) { NumBallsRemaining = Num; }
+
+bool GameStateObject::IsGameOver() { return NumBallsRemaining <= 0; }
 
 void GameStateObject::SetCurrentState(EGameState NewState)
 {
   CurrentGameState = NewState;
-}
-
-int GameStateObject::GetNumBallsRemaining()
-{
-  return NumBallsRemaining;
-}
-
-void GameStateObject::SetNumBallsRemaining(int Num)
-{
-  NumBallsRemaining = Num;
 }
