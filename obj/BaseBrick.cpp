@@ -9,14 +9,23 @@ BaseBrick::BaseBrick()
   MaxHits = 0;
   TileOffset = 0;
   CurrentHits = 0;
-
 }
 
 void BaseBrick::Draw(Engine* Engine)
 {
   // Draw the tile at the specified tile coordinates
-}
+  if (bIsAir)
+    return;
 
+  Engine->SetPixelMode(
+      olc::Pixel::MASK); // Dont draw pixels which have any transparency
+  Engine->DrawPartialSprite(olc::vi2d(XPosition, YPosition) * Engine->TileSize,
+                            Engine->TileSheet.get(),
+                            olc::vi2d(MaxHits, 0) * Engine->TileSize,
+                            Engine->TileSize);
+  Engine->SetPixelMode(
+      olc::Pixel::NORMAL); // Dont draw pixels which have any transparency
+}
 
 void BaseBrick::Update(Engine* Engine, float DeltaTime)
 {

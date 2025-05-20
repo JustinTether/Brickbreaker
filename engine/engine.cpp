@@ -62,14 +62,11 @@ void Engine::InitializeGameState()
   std::shared_ptr<Ball> GameBall = std::make_shared<Ball>(this);
   GameObjects.push_back(std::static_pointer_cast<BaseObject>(GameBall));
 
-  // Clear any remaining brick states
-  Bricks.clear();
-
   for (int y = 0; y < MapHeight; y++)
   {
     for (int x = 0; x < MapWidth; x++)
     {
-      BaseBrick* NewBrick = new BaseBrick();
+      std::shared_ptr<BaseBrick> NewBrick = std::make_shared<BaseBrick>();
 
       if (x == 0 || y == 0 || x == MapWidth - 1)
       {
@@ -101,7 +98,10 @@ void Engine::InitializeGameState()
         NewBrick->TileOffset = 3;
         NewBrick->MaxHits = 3;
       }
-      Bricks.push_back(NewBrick);
+
+      NewBrick->XPosition = x;
+      NewBrick->YPosition = y;
+      GameObjects.push_back(std::static_pointer_cast<BaseObject>(NewBrick));
     }
   }
 }
@@ -180,25 +180,6 @@ bool Engine::OnUserUpdate(float fElapsedTime)
       GameState->SetCurrentState(EGameState::PAUSED);
       return true;
     }
-
-    // Draw the map
-    SetPixelMode(
-        olc::Pixel::MASK); // Dont draw pixels which have any transparency
-    for (int y = 0; y < MapHeight; y++)
-    {
-      for (int x = 0; x < MapWidth; x++)
-      {
-        BaseBrick* NewBrick = Bricks[y * MapWidth + x];
-
-        if (NewBrick->bIsAir)
-          // Do nothing with air bricks, they're not rendered
-          continue;
-
-        DrawPartialSprite(olc::vi2d(x, y) * TileSize, TileSheet.get(),
-                          olc::vi2d(NewBrick->MaxHits, 0) * TileSize, TileSize);
-      }
-    }
-    SetPixelMode(olc::Pixel::NORMAL);
 
     // Tick all GameObjects
     for (std::shared_ptr<BaseObject> GameObj : GameObjects)

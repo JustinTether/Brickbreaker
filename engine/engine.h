@@ -30,7 +30,6 @@ public:
 
   olc::QuickGUI::Manager GuiManager;
   olc::vi2d TileSize = {16, 16};
-  std::vector<BaseBrick*> Bricks;
 
   olc::vf2d PotentialBallPos = olc::vf2d();
   olc::vf2d TileBallRadialDims = olc::vf2d();
@@ -51,16 +50,19 @@ public:
   bool TestResolveCollisionPoint(const olc::vf2d& point);
   static void HandleClayErrors(Clay_ErrorData ErrorData);
 
-  template <class T> T* GetGameObjectOfType()
+  template <class T>
+  std::vector<std::shared_ptr<BaseObject>> GetGameObjectOfType()
   {
+    std::vector<std::shared_ptr<BaseObject>> FoundObjects;
     for (std::shared_ptr<BaseObject> Obj : GameObjects)
     {
-
       if (std::shared_ptr CastedObject = std::static_pointer_cast<T>(Obj))
       {
-        return CastedObject.get();
+        FoundObjects.push_back(Obj);
       }
     }
+
+    return FoundObjects;
   }
 
   int main();
