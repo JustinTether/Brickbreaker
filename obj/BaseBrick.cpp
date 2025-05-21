@@ -37,8 +37,24 @@ void BaseBrick::OnCollide()
   if (bIsAir || bIsWall)
     return;
 
+  if (bIsUpgrade)
+  {
+  }
+
   MaxHits--;
 
   if (MaxHits == 0)
+  {
+    // Determine if we're supposed to be an upgrade block, there should be some
+    // chance for this to occur
+    // This is just a 25% chance, but should honestly be a more sophisticated
+    // approach
+    if (rand() % 100 + 0 >= 75)
+    {
+      bIsUpgrade = true;
+      return;
+    }
+
     bIsAir = true;
+  }
 }

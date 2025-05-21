@@ -39,6 +39,7 @@ add_executable(BrickBreaker
     engine/GameState.cpp
     engine/Clay_Renderer_PGE.h
     engine/Clay_Renderer_PGE.cpp
+    engine/guuid.h
     main.cpp
     main.h
     obj/Ball.h

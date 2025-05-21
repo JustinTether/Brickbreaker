@@ -11,11 +11,20 @@
 #include "ui/GameOverMenu.h"
 #include <memory>
 
-#include "obj/upgrades/IncreaseBatWidth.h"
-
 #define OLC_PGEX_SOUND_H
+Engine* Engine::s_instance = nullptr;
 
 Engine::Engine() { sAppName = "BrickBreaker"; }
+
+Engine* Engine::Get()
+{
+  if (s_instance == nullptr)
+  {
+    s_instance = new Engine();
+  }
+
+  return s_instance;
+}
 
 void Engine::HandleClayErrors(Clay_ErrorData ErrorData)
 {
@@ -32,9 +41,6 @@ bool Engine::OnUserCreate()
   GameState = new GameStateObject();
   GuiManager.colNormal = olc::YELLOW;
   TileSheet = std::make_unique<olc::Sprite>("../assets/sprites/tileset-01.png");
-
-  // std::shared_ptr<IncreaseBatWidthUpgrade> WidthUpgrade =
-  // std::make_shared<IncreaseBatWidthUpgrade>(10.0f, 850.0f);
 
   // Initialize Clay for use
   ClayRenderer = new ClayPGERenderer();
@@ -56,11 +62,11 @@ void Engine::InitializeGameState()
   GameState->ResetGame();
   GameObjects.clear();
 
-  std::shared_ptr<Bat> PlayerBat = std::make_shared<Bat>(this);
-  GameObjects.push_back(std::static_pointer_cast<BaseObject>(PlayerBat));
+  std::shared_ptr<BaseObject> PlayerBat = std::make_shared<Bat>(this);
+  GameObjects.push_back(PlayerBat);
 
   std::shared_ptr<Ball> GameBall = std::make_shared<Ball>(this);
-  GameObjects.push_back(std::static_pointer_cast<BaseObject>(GameBall));
+  GameObjects.push_back(GameBall);
 
   for (int y = 0; y < MapHeight; y++)
   {
@@ -239,5 +245,25 @@ void Engine::GCObjects()
           std::remove(GameObjects.begin(), GameObjects.end(), GameObj),
           GameObjects.end());
     }
+  }
+}
+
+void Engine::AddNewGameObject(std::shared_ptr<BaseObject> NewObject)
+{
+  GameObjects.push_back(NewObject);
+}
+
+void Engine::RemoveGameObject(std::shared_ptr<BaseObject> ObjectToRemove)
+{
+  std::string GUUID = ObjectToRemove->GUUID;
+  auto it = std::find_if(GameObjects.begin(), GameObjects.end(),
+                         [&GUUID](const std::shared_ptr<BaseObject> Obj)
+                         { return Obj->GUUID == GUUID; });
+
+  if (it != GameObjects.end())
+  {
+    auto index = std::distance(GameObjects.begin(), it);
+
+    GameObjects.erase(GameObjects.begin() + index);
   }
 }

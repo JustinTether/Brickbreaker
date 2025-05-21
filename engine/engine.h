@@ -20,11 +20,18 @@ class BaseObject;
 
 class Engine : public olc::PixelGameEngine
 {
+
+private:
+  Engine();
+  Engine(const Engine&) = delete;
+  Engine& operator=(const Engine&) = delete;
+
+  // singleton of our Engine class
+  static Engine* s_instance;
+
 public:
+  static Engine* Get();
   // Menus
-  MainMenuGUI* MainMenuObject;
-  PauseMenu* PauseMenuObject;
-  GameOverGUI* GameOverMenuObject;
   Hud* HudObject;
   ClayPGERenderer* ClayRenderer;
 
@@ -40,8 +47,6 @@ public:
 
   // Audio Manager through MiniAudio
   olc::MiniAudio AudioManager;
-
-  Engine();
 
   GameStateObject* GameState;
 
@@ -69,7 +74,13 @@ public:
 
 private:
   std::vector<std::shared_ptr<BaseObject>> GameObjects;
+  MainMenuGUI* MainMenuObject;
+  PauseMenu* PauseMenuObject;
+  GameOverGUI* GameOverMenuObject;
+
   void GCObjects();
   void InitializeGameState();
+  void AddNewGameObject(std::shared_ptr<BaseObject> NewObject);
+  void RemoveGameObject(std::shared_ptr<BaseObject> ObjectToRemove);
 };
 #endif
