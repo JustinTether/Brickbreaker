@@ -21,9 +21,15 @@ void Bat::Draw(Engine* EngineInstance)
 
 void Bat::Update(Engine* EngineInstance, float DeltaTime)
 {
-  if (EngineInstance->GetKey(olc::Key::LEFT).bHeld)
+  if (EngineInstance->GetKey(olc::Key::LEFT).bHeld ||
+      EngineInstance->GetMouse(0).bHeld &&
+          EngineInstance->GetMousePos().x <= EngineInstance->ScreenWidth() / 2)
     BatPosition -= BatSpeed * DeltaTime;
-  if (EngineInstance->GetKey(olc::Key::RIGHT).bHeld)
+
+  std::cout << "Mouse Position: " << EngineInstance->GetMousePos() << std::endl;
+  if (EngineInstance->GetKey(olc::Key::RIGHT).bHeld ||
+      EngineInstance->GetMouse(0).bHeld &&
+          EngineInstance->GetMousePos().x >= EngineInstance->ScreenWidth() / 2)
     BatPosition += BatSpeed * DeltaTime;
 
   // Constrain bat to the edges of the screen
