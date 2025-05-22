@@ -31,17 +31,11 @@ private:
 
 public:
   static Engine* Get();
-  // Menus
-  Hud* HudObject;
+  // CLAY Renderer
   ClayPGERenderer* ClayRenderer;
 
   olc::QuickGUI::Manager GuiManager;
   olc::vi2d TileSize = {16, 16};
-
-  olc::vf2d PotentialBallPos = olc::vf2d();
-  olc::vf2d TileBallRadialDims = olc::vf2d();
-  int MapWidth = 24;
-  int MapHeight = 30;
 
   std::unique_ptr<olc::Sprite> TileSheet;
 
@@ -52,7 +46,6 @@ public:
 
   virtual bool OnUserCreate() override;
   virtual bool OnUserUpdate(float fElapsedTime) override;
-  bool TestResolveCollisionPoint(const olc::vf2d& point);
   static void HandleClayErrors(Clay_ErrorData ErrorData);
 
   template <class T>
@@ -73,14 +66,10 @@ public:
   int main();
   void AddNewGameObject(std::shared_ptr<BaseObject> NewObject);
   void RemoveGameObject(std::shared_ptr<BaseObject> ObjectToRemove);
+  void ClearAllGameObjects();
 
 private:
   std::vector<std::shared_ptr<BaseObject>> GameObjects;
-  MainMenuGUI* MainMenuObject;
-  PauseMenu* PauseMenuObject;
-  GameOverGUI* GameOverMenuObject;
-
   void GCObjects();
-  void InitializeGameState();
 };
 #endif

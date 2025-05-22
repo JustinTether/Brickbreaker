@@ -1,9 +1,16 @@
 #pragma once
+#include "lib/olcPixelGameEngine.h"
 #include "upgrades/BaseUpgrade.h"
 #include "upgrades/IncreaseBatWidth.h"
 #include "upgrades/UpgradeFactory.h"
+
 #include <vector>
 class Engine;
+class MainMenuGUI;
+class GameOverGUI;
+class PauseMenu;
+class Hud;
+
 enum EGameState
 {
   MAIN_MENU,
@@ -30,9 +37,18 @@ public:
   void SetNumBallsRemaining(int Num);
   bool IsGameOver();
   void ResetGame();
-
+  void Tick(float DeltaTime);
   void ApplyRandomUpgrade();
+  void InitializeGameState();
+
+  int MapWidth = 24;
+  int MapHeight = 30;
+  // olc::vi2d TileSize = {16, 16};
 
 private:
   std::shared_ptr<UpgradeFactory> UpgradeFactoryObject;
+  MainMenuGUI* MainMenuObject;
+  PauseMenu* PauseMenuObject;
+  GameOverGUI* GameOverMenuObject;
+  Hud* HudObject;
 };
