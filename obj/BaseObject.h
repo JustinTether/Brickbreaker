@@ -13,15 +13,14 @@ class BaseObject
 
 protected:
 public:
-    BaseObject();
-    virtual void Draw(Engine* Engine);
-    virtual void Update(Engine* Engine, float DeltaTime);
-    
-    bool bShouldBeGCd = false;
-    virtual void Tick(Engine* Engine, float DeltaTime);
+  BaseObject();
+  virtual void Draw(Engine* Engine);
+  virtual void Update(Engine* Engine, float DeltaTime);
+
+  bool bShouldBeGCd = false;
+  virtual void Tick(Engine* Engine, float DeltaTime);
+
+  std::string GUUID;
 };
 
-
-#endif //BASEOBJECT_H
-
-
+#endif // BASEOBJECT_H

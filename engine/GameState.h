@@ -1,7 +1,9 @@
 #pragma once
-
+#include "upgrades/BaseUpgrade.h"
+#include "upgrades/IncreaseBatWidth.h"
+#include "upgrades/UpgradeFactory.h"
+#include <vector>
 class Engine;
-
 enum EGameState
 {
   MAIN_MENU,
@@ -19,6 +21,7 @@ public:
 protected:
   int NumBallsRemaining = 0;
   EGameState CurrentGameState;
+  std::vector<std::shared_ptr<BaseUpgrade>> AvailableUpgrades;
 
 public:
   void SetCurrentState(EGameState NewState);
@@ -27,4 +30,9 @@ public:
   void SetNumBallsRemaining(int Num);
   bool IsGameOver();
   void ResetGame();
+
+  void ApplyRandomUpgrade();
+
+private:
+  std::shared_ptr<UpgradeFactory> UpgradeFactoryObject;
 };

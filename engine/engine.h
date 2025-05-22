@@ -20,17 +20,23 @@ class BaseObject;
 
 class Engine : public olc::PixelGameEngine
 {
+
+private:
+  Engine();
+  Engine(const Engine&) = delete;
+  Engine& operator=(const Engine&) = delete;
+
+  // singleton of our Engine class
+  static Engine* s_instance;
+
 public:
+  static Engine* Get();
   // Menus
-  MainMenuGUI* MainMenuObject;
-  PauseMenu* PauseMenuObject;
-  GameOverGUI* GameOverMenuObject;
   Hud* HudObject;
   ClayPGERenderer* ClayRenderer;
 
   olc::QuickGUI::Manager GuiManager;
   olc::vi2d TileSize = {16, 16};
-  std::vector<BaseBrick*> Bricks;
 
   olc::vf2d PotentialBallPos = olc::vf2d();
   olc::vf2d TileBallRadialDims = olc::vf2d();
@@ -42,8 +48,6 @@ public:
   // Audio Manager through MiniAudio
   olc::MiniAudio AudioManager;
 
-  Engine();
-
   GameStateObject* GameState;
 
   virtual bool OnUserCreate() override;
@@ -51,22 +55,31 @@ public:
   bool TestResolveCollisionPoint(const olc::vf2d& point);
   static void HandleClayErrors(Clay_ErrorData ErrorData);
 
-  template <class T> T* GetGameObjectOfType()
+  template <class T>
+  std::vector<std::shared_ptr<BaseObject>> GetGameObjectOfType()
   {
+    std::vector<std::shared_ptr<BaseObject>> FoundObjects;
     for (std::shared_ptr<BaseObject> Obj : GameObjects)
     {
-
       if (std::shared_ptr CastedObject = std::static_pointer_cast<T>(Obj))
       {
-        return CastedObject.get();
+        FoundObjects.push_back(Obj);
       }
     }
+
+    return FoundObjects;
   }
 
   int main();
+  void AddNewGameObject(std::shared_ptr<BaseObject> NewObject);
+  void RemoveGameObject(std::shared_ptr<BaseObject> ObjectToRemove);
 
 private:
   std::vector<std::shared_ptr<BaseObject>> GameObjects;
+  MainMenuGUI* MainMenuObject;
+  PauseMenu* PauseMenuObject;
+  GameOverGUI* GameOverMenuObject;
+
   void GCObjects();
   void InitializeGameState();
 };

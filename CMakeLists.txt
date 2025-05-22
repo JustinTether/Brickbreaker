@@ -25,6 +25,7 @@ add_executable(BrickBreaker
     obj/upgrades/BaseUpgrade.h
     obj/upgrades/IncreaseBatWidth.h
     obj/upgrades/IncreaseBatWidth.cpp
+    obj/upgrades/UpgradeFactory.h
     ui/MainMenu.cpp
     ui/MainMenu.h
     ui/PauseMenu.cpp
@@ -39,6 +40,7 @@ add_executable(BrickBreaker
     engine/GameState.cpp
     engine/Clay_Renderer_PGE.h
     engine/Clay_Renderer_PGE.cpp
+    engine/guuid.h
     main.cpp
     main.h
     obj/Ball.h
