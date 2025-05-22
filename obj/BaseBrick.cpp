@@ -1,11 +1,13 @@
 #include "BaseBrick.h"
 #include "../engine/engine.h"
+#include "engine/GameState.h"
 
 BaseBrick::BaseBrick()
 {
   // Defaults
   bIsAir = false;
   bIsWall = false;
+  bIsUpgrade = false;
   MaxHits = 0;
   TileOffset = 0;
   CurrentHits = 0;
@@ -19,10 +21,22 @@ void BaseBrick::Draw(Engine* Engine)
 
   Engine->SetPixelMode(
       olc::Pixel::MASK); // Dont draw pixels which have any transparency
-  Engine->DrawPartialSprite(olc::vi2d(XPosition, YPosition) * Engine->TileSize,
-                            Engine->TileSheet.get(),
-                            olc::vi2d(MaxHits, 0) * Engine->TileSize,
-                            Engine->TileSize);
+
+  if (bIsUpgrade)
+  {
+    Engine->DrawPartialSprite(
+        olc::vi2d(XPosition, YPosition) * Engine->TileSize,
+        Engine->TileSheet.get(), olc::vi2d(4, 0) * Engine->TileSize,
+        Engine->TileSize);
+  }
+  else
+  {
+    Engine->DrawPartialSprite(
+        olc::vi2d(XPosition, YPosition) * Engine->TileSize,
+        Engine->TileSheet.get(), olc::vi2d(MaxHits, 0) * Engine->TileSize,
+        Engine->TileSize);
+  }
+
   Engine->SetPixelMode(
       olc::Pixel::NORMAL); // Dont draw pixels which have any transparency
 }
@@ -39,6 +53,10 @@ void BaseBrick::OnCollide()
 
   if (bIsUpgrade)
   {
+    Engine::Get()->GameState->ApplyRandomUpgrade();
+    bIsUpgrade = false;
+    bIsAir = true;
+    return;
   }
 
   MaxHits--;

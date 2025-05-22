@@ -137,33 +137,28 @@ bool Ball::TestCollisionPoint(olc::vf2d point, Engine* Engine)
   }
 
   if (Brick->bIsAir)
-  {
-    // Do Nothing, no collision
     return false;
-  }
-  else
+
+  // Ball has collided with a tile
+  bool bTileHit = !Brick->bIsAir && !Brick->bIsWall;
+  if (bTileHit)
+    Brick->OnCollide();
+
+  if (bTileHit)
   {
-    // Ball has collided with a tile
-    bool bTileHit = !Brick->bIsAir && !Brick->bIsWall;
-    if (bTileHit)
-      Brick->OnCollide();
-
-    if (bTileHit)
-    {
-      Engine->AudioManager.Play(HitSound);
-    }
-
-    // Collision response
-    if (point.x == 0.0f)
-    {
-      BallVelocity.y *= -1.0f;
-    }
-
-    if (point.y == 0.0f)
-    {
-      BallVelocity.x *= -1.0f;
-    }
-
-    return bTileHit;
+    Engine->AudioManager.Play(HitSound);
   }
+
+  // Collision response
+  if (point.x == 0.0f)
+  {
+    BallVelocity.y *= -1.0f;
+  }
+
+  if (point.y == 0.0f)
+  {
+    BallVelocity.x *= -1.0f;
+  }
+
+  return bTileHit;
 }

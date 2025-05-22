@@ -1,6 +1,7 @@
 #pragma once
 #include "upgrades/BaseUpgrade.h"
 #include "upgrades/IncreaseBatWidth.h"
+#include "upgrades/UpgradeFactory.h"
 #include <vector>
 class Engine;
 enum EGameState
@@ -31,4 +32,7 @@ public:
   void ResetGame();
 
   void ApplyRandomUpgrade();
+
+private:
+  std::shared_ptr<UpgradeFactory> UpgradeFactoryObject;
 };

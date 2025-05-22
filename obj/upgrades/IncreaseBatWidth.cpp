@@ -20,7 +20,7 @@ void IncreaseBatWidthUpgrade::ApplyUpgrade(Engine* Engine)
 
   std::shared_ptr<Bat> UserBat = std::static_pointer_cast<Bat>(BatObjects[0]);
 
-  OldBatWidth = UserBat->BatWidth;
+  OldBatWidth = UserBat->OriginalBatWidth;
   UserBat->BatWidth = NewBatWidth;
 }
 

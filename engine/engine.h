@@ -71,6 +71,8 @@ public:
   }
 
   int main();
+  void AddNewGameObject(std::shared_ptr<BaseObject> NewObject);
+  void RemoveGameObject(std::shared_ptr<BaseObject> ObjectToRemove);
 
 private:
   std::vector<std::shared_ptr<BaseObject>> GameObjects;
@@ -80,7 +82,5 @@ private:
 
   void GCObjects();
   void InitializeGameState();
-  void AddNewGameObject(std::shared_ptr<BaseObject> NewObject);
-  void RemoveGameObject(std::shared_ptr<BaseObject> ObjectToRemove);
 };
 #endif

@@ -1,15 +1,17 @@
 #include "GameState.h"
 #include "engine.h"
+#include <random>
 
 GameStateObject::GameStateObject()
 {
   CurrentGameState = EGameState::MAIN_MENU;
   NumBallsRemaining = 3;
-  std::shared_ptr<BaseUpgrade> IncreaseBatWidth =
-      std::static_pointer_cast<BaseUpgrade>(
-          std::make_shared<IncreaseBatWidthUpgrade>(10.0, 100.0));
+  UpgradeFactoryObject = std::make_shared<UpgradeFactory>();
 
-  AvailableUpgrades.push_back(IncreaseBatWidth);
+  // Register UpgradeFactory types
+  UpgradeFactoryObject->RegisterUpgrade(
+      "IncreaseBatWidthUpgrade",
+      []() { return std::make_shared<IncreaseBatWidthUpgrade>(10.0, 100.0); });
 }
 
 void GameStateObject::ResetGame() { NumBallsRemaining = 3; }
@@ -30,6 +32,18 @@ void GameStateObject::SetCurrentState(EGameState NewState)
 void GameStateObject::ApplyRandomUpgrade()
 {
   Engine* Engine = Engine::Get();
+  std::random_device RandomDevice;
+  std::mt19937 Generator(RandomDevice());
 
-  std::shared_ptr<BaseUpgrade> ChosenUpgrade;
+  const std::vector<std::string> AvailableUpgrades =
+      UpgradeFactoryObject->GetRegisteredUpgrades();
+
+  std::uniform_int_distribution<> Distrobution(0, AvailableUpgrades.size() - 1);
+  int RandomIndex = Distrobution(Generator);
+
+  std::string ChosenUpgradeType = AvailableUpgrades[RandomIndex];
+  std::shared_ptr<BaseUpgrade> ChosenUpgrade =
+      UpgradeFactoryObject->CreateUpgrade(ChosenUpgradeType);
+
+  Engine::Get()->AddNewGameObject(ChosenUpgrade);
 }
