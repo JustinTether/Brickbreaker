@@ -1,20 +1,16 @@
 #include "engine.h"
-#include "../lib/olcPGEX_QuickGUI.h"
-#include "../obj/Ball.h"
-#include "../obj/BaseBrick.h"
-#include "../obj/Bat.h"
-#include "../ui/Hud.h"
-#include "../ui/MainMenu.h"
-#include "../ui/PauseMenu.h"
 #include "Clay_Renderer_PGE.h"
 #include "GameState.h"
-#include "ui/GameOverMenu.h"
 #include <memory>
 
 #define OLC_PGEX_SOUND_H
 Engine* Engine::s_instance = nullptr;
 
-Engine::Engine() { sAppName = "BrickBreaker"; }
+Engine::Engine()
+{
+  sAppName = "BrickBreaker";
+  GameState = new GameStateObject();
+}
 
 Engine* Engine::Get()
 {
@@ -34,12 +30,7 @@ void Engine::HandleClayErrors(Clay_ErrorData ErrorData)
 bool Engine::OnUserCreate()
 {
   // Persistent menu pointers, these carry over between games/rounds
-  MainMenuObject = new MainMenuGUI();
-  PauseMenuObject = new PauseMenu();
-  GameOverMenuObject = new GameOverGUI();
-  HudObject = new Hud();
   GameState = new GameStateObject();
-  GuiManager.colNormal = olc::YELLOW;
   TileSheet = std::make_unique<olc::Sprite>("../assets/sprites/tileset-01.png");
 
   // Initialize Clay for use
@@ -53,63 +44,8 @@ bool Engine::OnUserCreate()
                   (Clay_ErrorHandler){HandleClayErrors});
   Clay_SetMeasureTextFunction(&ClayPGERenderer::MeasureText, nullptr);
 
-  InitializeGameState();
+  GameState->InitializeGameState();
   return true;
-}
-
-void Engine::InitializeGameState()
-{
-  GameState->ResetGame();
-  GameObjects.clear();
-
-  std::shared_ptr<BaseObject> PlayerBat = std::make_shared<Bat>(this);
-  GameObjects.push_back(PlayerBat);
-
-  std::shared_ptr<Ball> GameBall = std::make_shared<Ball>(this);
-  GameObjects.push_back(GameBall);
-
-  for (int y = 0; y < MapHeight; y++)
-  {
-    for (int x = 0; x < MapWidth; x++)
-    {
-      std::shared_ptr<BaseBrick> NewBrick = std::make_shared<BaseBrick>();
-
-      if (x == 0 || y == 0 || x == MapWidth - 1)
-      {
-        NewBrick->bIsWall = true;
-      }
-      else
-      {
-        NewBrick->bIsAir = true;
-        NewBrick->bIsWall = false;
-      }
-
-      if (x > 2 && x <= 20 && y > 3 && y <= 5)
-      {
-        NewBrick->bIsAir = false;
-        NewBrick->TileOffset = 1;
-        NewBrick->MaxHits = 1;
-      }
-
-      if (x > 2 && x <= 20 && y > 5 && y <= 7)
-      {
-        NewBrick->bIsAir = false;
-        NewBrick->TileOffset = 2;
-        NewBrick->MaxHits = 2;
-      }
-
-      if (x > 2 && x <= 20 && y > 7 && y <= 9)
-      {
-        NewBrick->bIsAir = false;
-        NewBrick->TileOffset = 3;
-        NewBrick->MaxHits = 3;
-      }
-
-      NewBrick->XPosition = x;
-      NewBrick->YPosition = y;
-      GameObjects.push_back(std::static_pointer_cast<BaseObject>(NewBrick));
-    }
-  }
 }
 
 bool Engine::OnUserUpdate(float fElapsedTime)
@@ -117,77 +53,10 @@ bool Engine::OnUserUpdate(float fElapsedTime)
   // Clear previous frame
   Clear(olc::BLACK);
 
-  switch (GameState->GetCurrentState())
+  GameState->Tick(fElapsedTime);
+
+  if (GameState->GetCurrentState() == EGameState::GAME_LOOP)
   {
-  case EGameState::MAIN_MENU:
-    if (MainMenuObject && !MainMenuObject->bIsInitialized)
-    {
-      MainMenuObject->Initialize(this);
-      return true;
-    }
-
-    if (MainMenuObject->bIsStartButtonPressed)
-    {
-      // AudioManager.PlayWaveform(MainMenuObject->ClickSound);
-      InitializeGameState();
-      AudioManager.Toggle(MainMenuObject->ClickSound);
-      GameState->SetCurrentState(EGameState::GAME_LOOP);
-    }
-    MainMenuObject->Draw(this);
-
-    break;
-
-  case EGameState::PAUSED:
-    if (PauseMenuObject && !PauseMenuObject->bIsInitialized)
-    {
-      PauseMenuObject->Initialize(this);
-      return true;
-    }
-
-    if (PauseMenuObject->bIsResumeButtonClicked ||
-        GetKey(olc::Key::ESCAPE).bPressed)
-    {
-      AudioManager.Toggle(PauseMenuObject->ClickSound);
-      PauseMenuObject->bIsResumeButtonClicked = false;
-      GameState->SetCurrentState(EGameState::GAME_LOOP);
-      return true;
-    }
-
-    PauseMenuObject->Draw(this);
-    break;
-
-  case EGameState::GAME_LOOP:
-  {
-    if (GetKey(olc::Key::P).bPressed)
-    {
-      std::shared_ptr<IncreaseBatWidthUpgrade> BatWidthUpgrade =
-          std::make_shared<IncreaseBatWidthUpgrade>(10.0f, 100.0f);
-      GameObjects.push_back(
-          std::static_pointer_cast<BaseObject>(BatWidthUpgrade));
-    }
-
-    if (HudObject && !HudObject->bIsInitialized)
-    {
-      HudObject->Initialize(this);
-    }
-
-    // Update the HUD and draw it
-    HudObject->Draw(this);
-
-    // if we're out of balls, end the game
-    if (GameState->GetNumBallsRemaining() < 0)
-    {
-      GameState->SetCurrentState(EGameState::END_GAME);
-      return true;
-    }
-
-    if (GetKey(olc::Key::ESCAPE).bPressed)
-    {
-      GameState->SetCurrentState(EGameState::PAUSED);
-      return true;
-    }
-
-    // Tick all GameObjects
     for (std::shared_ptr<BaseObject> GameObj : GameObjects)
     {
       if (GameObj && GameObj->bShouldBeGCd)
@@ -195,41 +64,6 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
       GameObj->Tick(this, fElapsedTime);
     }
-    // Draw round state
-
-    // Check for end-round conditions
-    if (GameState->IsGameOver())
-    {
-      GameState->SetCurrentState(EGameState::END_GAME);
-    }
-  }
-  break;
-
-  case EGameState::END_ROUND:
-    break;
-
-  case EGameState::END_GAME:
-    if (!GameOverMenuObject->bIsInitialized)
-      GameOverMenuObject->Initialize(this);
-
-    GameOverMenuObject->Draw(this);
-
-    if (GameOverMenuObject->bIsNewGameButtonPressed)
-    {
-      AudioManager.Toggle(GameOverMenuObject->ClickSound);
-      InitializeGameState();
-      GameState->SetCurrentState(EGameState::GAME_LOOP);
-      break;
-    }
-
-    if (GameOverMenuObject->bIsMainMenuButtonPressed)
-    {
-      AudioManager.Toggle(GameOverMenuObject->ClickSound);
-      GameState->SetCurrentState(EGameState::MAIN_MENU);
-      break;
-    }
-
-    break;
   }
 
   return true;
@@ -267,3 +101,5 @@ void Engine::RemoveGameObject(std::shared_ptr<BaseObject> ObjectToRemove)
     GameObjects.erase(GameObjects.begin() + index);
   }
 }
+
+void Engine::ClearAllGameObjects() { GameObjects.clear(); }

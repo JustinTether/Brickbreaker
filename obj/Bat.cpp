@@ -26,7 +26,6 @@ void Bat::Update(Engine* EngineInstance, float DeltaTime)
           EngineInstance->GetMousePos().x <= EngineInstance->ScreenWidth() / 2)
     BatPosition -= BatSpeed * DeltaTime;
 
-  std::cout << "Mouse Position: " << EngineInstance->GetMousePos() << std::endl;
   if (EngineInstance->GetKey(olc::Key::RIGHT).bHeld ||
       EngineInstance->GetMouse(0).bHeld &&
           EngineInstance->GetMousePos().x >= EngineInstance->ScreenWidth() / 2)
