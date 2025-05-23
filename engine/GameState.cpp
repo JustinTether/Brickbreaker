@@ -215,5 +215,8 @@ void GameStateObject::ApplyRandomUpgrade()
   std::shared_ptr<BaseUpgrade> ChosenUpgrade =
       UpgradeFactoryObject->CreateUpgrade(ChosenUpgradeType);
 
+  // Set the Name of the object to the stringified type name for later use in
+  // debug UI
+  ChosenUpgrade->Name = ChosenUpgradeType;
   Engine::Get()->AddNewGameObject(ChosenUpgrade);
 }

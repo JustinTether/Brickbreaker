@@ -45,7 +45,7 @@ public:
     std::vector<std::shared_ptr<BaseObject>> FoundObjects;
     for (std::shared_ptr<BaseObject> Obj : GameObjects)
     {
-      if (std::shared_ptr CastedObject = std::static_pointer_cast<T>(Obj))
+      if (std::shared_ptr<T> CastedObject = std::dynamic_pointer_cast<T>(Obj))
       {
         FoundObjects.push_back(Obj);
       }
