@@ -7,6 +7,8 @@
 #include "ui/Hud.h"
 #include "ui/MainMenu.h"
 #include "ui/PauseMenu.h"
+#include "upgrades/IncreaseBatWidth.h"
+#include "upgrades/NewBallsUpgrade.h"
 #include <random>
 
 GameStateObject::GameStateObject()
@@ -23,6 +25,10 @@ GameStateObject::GameStateObject()
   UpgradeFactoryObject->RegisterUpgrade(
       "IncreaseBatWidthUpgrade",
       []() { return std::make_shared<IncreaseBatWidthUpgrade>(10.0, 100.0); });
+
+  UpgradeFactoryObject->RegisterUpgrade(
+      "ThreeNewBallsUpgrade",
+      []() { return std::make_shared<NewBallsUpgrade>(10.0, 3); });
 }
 
 void GameStateObject::InitializeGameState()

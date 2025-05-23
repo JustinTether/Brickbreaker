@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "Clay_Renderer_PGE.h"
 #include "GameState.h"
+#include "obj/BaseObject.h"
 #include <memory>
 
 #define OLC_PGEX_SOUND_H
@@ -31,7 +32,7 @@ bool Engine::OnUserCreate()
 {
   // Persistent menu pointers, these carry over between games/rounds
   GameState = new GameStateObject();
-  TileSheet = std::make_unique<olc::Sprite>("../assets/sprites/tileset-01.png");
+  TileSheet = std::make_unique<olc::Sprite>("assets/sprites/tileset-01.png");
 
   // Initialize Clay for use
   ClayRenderer = new ClayPGERenderer();
@@ -51,6 +52,13 @@ bool Engine::OnUserCreate()
 bool Engine::OnUserUpdate(float fElapsedTime)
 {
   // Clear previous frame
+  TimeSinceLastGC += fElapsedTime;
+  if (TimeSinceLastGC >= GCInterval)
+  {
+    GCObjects();
+    TimeSinceLastGC = 0;
+  }
+
   Clear(olc::BLACK);
 
   GameState->Tick(fElapsedTime);
@@ -71,6 +79,8 @@ bool Engine::OnUserUpdate(float fElapsedTime)
 
 void Engine::GCObjects()
 {
+  std::cout << "Initiating GC!" << std::endl;
+  int GCCount = 0;
   for (std::shared_ptr<BaseObject> GameObj : GameObjects)
   {
     if (GameObj && GameObj->bShouldBeGCd)
@@ -78,8 +88,12 @@ void Engine::GCObjects()
       GameObjects.erase(
           std::remove(GameObjects.begin(), GameObjects.end(), GameObj),
           GameObjects.end());
+
+      GCCount++;
     }
   }
+
+  std::cout << "GC Complete, num objects GC'd: " << GCCount << std::endl;
 }
 
 void Engine::AddNewGameObject(std::shared_ptr<BaseObject> NewObject)

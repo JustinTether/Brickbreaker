@@ -7,7 +7,7 @@ void MainMenuGUI::Initialize(Engine* EngineInstance)
 {
 
   ClickSound =
-      EngineInstance->AudioManager.LoadSound("../assets/sounds/click3.wav");
+      EngineInstance->AudioManager.LoadSound("assets/sounds/click3.wav");
   bIsInitialized = true;
 }
 

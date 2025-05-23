@@ -26,6 +26,8 @@ add_executable(BrickBreaker
     obj/upgrades/IncreaseBatWidth.h
     obj/upgrades/IncreaseBatWidth.cpp
     obj/upgrades/UpgradeFactory.h
+    obj/upgrades/NewBallsUpgrade.cpp
+    obj/upgrades/NewBallsUpgrade.h
     ui/MainMenu.cpp
     ui/MainMenu.h
     ui/PauseMenu.cpp
@@ -55,7 +57,7 @@ else()
    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "BrickBreaker")
 endif()
 
-
+add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-g;")
 #[===[
 set_target_properties(BrickBreaker PROPERTIES OUTPUT_NAME "BrickBreaker") 
 message(STATUS "Looking for X11...")

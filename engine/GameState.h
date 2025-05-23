@@ -1,7 +1,6 @@
 #pragma once
 #include "lib/olcPixelGameEngine.h"
 #include "upgrades/BaseUpgrade.h"
-#include "upgrades/IncreaseBatWidth.h"
 #include "upgrades/UpgradeFactory.h"
 
 #include <vector>

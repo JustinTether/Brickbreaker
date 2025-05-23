@@ -11,11 +11,11 @@ Ball::Ball(Engine* Engine)
   BallColour = olc::BLUE;
   BallSpeed = 3.0f;
   float Angle = -0.4f;
-  BallVelocity = {static_cast<float>(cos(Angle)),
-                  static_cast<float>(sin(Angle))};
+  float BallAngle = -1.25f;
+  BallVelocity = {static_cast<float>(BallSpeed * cos(BallAngle)),
+                  static_cast<float>(BallSpeed * sin(BallAngle))};
   BallPosition = olc::vf2d(12.5f, 15.5f);
-  HitSound = Engine->AudioManager.LoadSound("../assets/sounds/hit.wav");
-  ResetBall(Engine);
+  HitSound = Engine->AudioManager.LoadSound("assets/sounds/hit.wav");
 }
 
 void Ball::Draw(Engine* Engine)
@@ -91,6 +91,16 @@ void Ball::ResetBall(Engine* Engine)
 {
   // Set a random angle/velocity for the ball and reset to center of screen
   // float BallAngle = (float(rand()) / (float(RAND_MAX) * 2.0f) * 3.14169f);
+
+  if (bIsExtraBall)
+  {
+    // TODO: This feels a bit jank, I dunno if the ball should remove itself
+    // like this
+    bShouldBeGCd = true;
+    // Engine->RemoveGameObject(std::shared_ptr<BaseObject>(this));
+    return;
+  }
+
   Engine->GameState->SetNumBallsRemaining(
       Engine->GameState->GetNumBallsRemaining() - 1);
   float BallAngle = -1.25f;
