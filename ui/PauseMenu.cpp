@@ -6,7 +6,7 @@
 void PauseMenu::Initialize(Engine* Engine)
 {
   bIsInitialized = true;
-  ClickSound = Engine->AudioManager.LoadSound("../assets/sounds/click3.wav");
+  ClickSound = Engine->AudioManager.LoadSound("assets/sounds/click3.wav");
 }
 
 void PauseMenu::Draw(Engine* Engine)

@@ -5,17 +5,8 @@
 #include "../lib/olcPGEX_MiniAudio.h"
 #include "../lib/olcPGEX_QuickGUI.h"
 #include "../lib/olcPixelGameEngine.h"
-#include "obj/BaseObject.h"
-class Bat;
-class Ball;
-class MainMenuGUI;
-class GameOverGUI;
-class PauseMenu;
-class BaseBrick;
-class Hud;
 class GameStateObject;
 class ClayPGERenderer;
-class IncreaseBatWidthUpgrade;
 class BaseObject;
 
 class Engine : public olc::PixelGameEngine
@@ -52,9 +43,9 @@ public:
   std::vector<std::shared_ptr<BaseObject>> GetGameObjectOfType()
   {
     std::vector<std::shared_ptr<BaseObject>> FoundObjects;
-    for (std::shared_ptr<BaseObject> Obj : GameObjects)
+    for (std::shared_ptr<BaseObject>& Obj : GameObjects)
     {
-      if (std::shared_ptr CastedObject = std::static_pointer_cast<T>(Obj))
+      if (std::shared_ptr<T> CastedObject = std::dynamic_pointer_cast<T>(Obj))
       {
         FoundObjects.push_back(Obj);
       }
@@ -63,7 +54,6 @@ public:
     return FoundObjects;
   }
 
-  int main();
   void AddNewGameObject(std::shared_ptr<BaseObject> NewObject);
   void RemoveGameObject(std::shared_ptr<BaseObject> ObjectToRemove);
   void ClearAllGameObjects();
@@ -71,5 +61,7 @@ public:
 private:
   std::vector<std::shared_ptr<BaseObject>> GameObjects;
   void GCObjects();
+  float GCInterval = 10.0f;
+  float TimeSinceLastGC = 0;
 };
 #endif

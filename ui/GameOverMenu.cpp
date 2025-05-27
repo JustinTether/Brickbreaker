@@ -5,7 +5,7 @@
 
 void GameOverGUI::Initialize(Engine* Engine)
 {
-  ClickSound = Engine->AudioManager.LoadSound("../assets/sounds/click3.wav");
+  ClickSound = Engine->AudioManager.LoadSound("assets/sounds/click3.wav");
   bIsInitialized = true;
 }
 

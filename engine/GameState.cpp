@@ -7,6 +7,8 @@
 #include "ui/Hud.h"
 #include "ui/MainMenu.h"
 #include "ui/PauseMenu.h"
+#include "upgrades/IncreaseBatWidth.h"
+#include "upgrades/NewBallsUpgrade.h"
 #include <random>
 
 GameStateObject::GameStateObject()
@@ -23,11 +25,17 @@ GameStateObject::GameStateObject()
   UpgradeFactoryObject->RegisterUpgrade(
       "IncreaseBatWidthUpgrade",
       []() { return std::make_shared<IncreaseBatWidthUpgrade>(10.0, 100.0); });
+
+  UpgradeFactoryObject->RegisterUpgrade(
+      "ThreeNewBallsUpgrade",
+      []() { return std::make_shared<NewBallsUpgrade>(10.0, 3); });
 }
 
-void GameStateObject::InitializeGameState()
+void GameStateObject::InitializeGameState(bool bShouldReset)
 {
-  ResetGame();
+  if (bShouldReset)
+    ResetGame();
+
   Engine::Get()->ClearAllGameObjects();
 
   std::shared_ptr<BaseObject> PlayerBat = std::make_shared<Bat>(Engine::Get());
@@ -35,6 +43,12 @@ void GameStateObject::InitializeGameState()
 
   std::shared_ptr<BaseObject> GameBall = std::make_shared<Ball>(Engine::Get());
   Engine::Get()->AddNewGameObject(GameBall);
+
+  if (true)
+  {
+    GenerateRandomLevel();
+    return;
+  }
 
   for (int y = 0; y < MapHeight; y++)
   {
@@ -80,6 +94,55 @@ void GameStateObject::InitializeGameState()
     }
   }
 }
+
+// Mostly used for debugging or a 'random' mode, these aren't going to be
+// garaunteed fun or optimized levels
+void GameStateObject::GenerateRandomLevel()
+{
+
+  std::random_device RandomDevice;
+  std::mt19937 Generator(RandomDevice());
+  std::uniform_int_distribution<> BlockDistribution(1, 3);
+  std::uniform_int_distribution<> AirDistribution(0, 1);
+  int NumBricks = 0;
+
+  for (int y = 0; y < MapHeight; y++)
+  {
+    for (int x = 0; x < MapWidth; x++)
+    {
+      std::shared_ptr<BaseBrick> NewBrick = std::make_shared<BaseBrick>();
+
+      if (x == 0 || y == 0 || x == MapWidth - 1)
+      {
+        NewBrick->bIsWall = true;
+      }
+      else
+      {
+        NewBrick->bIsAir = true;
+        NewBrick->bIsWall = false;
+      }
+
+      if (x > 2 && x <= 20 && y > 3 && y <= 9)
+      {
+
+        NewBrick->bIsAir = static_cast<bool>(AirDistribution(Generator));
+        NewBrick->MaxHits = BlockDistribution(Generator);
+        NewBrick->TileOffset = NewBrick->MaxHits;
+
+        if (!NewBrick->bIsAir)
+          NumBricks++;
+      }
+
+      NewBrick->XPosition = x;
+      NewBrick->YPosition = y;
+      Engine::Get()->AddNewGameObject(
+          std::static_pointer_cast<BaseObject>(NewBrick));
+    }
+  }
+
+  SetNumBricksRemaining(NumBricks);
+}
+
 void GameStateObject::Tick(float DeltaTime)
 {
   switch (GetCurrentState())
@@ -94,7 +157,7 @@ void GameStateObject::Tick(float DeltaTime)
     if (MainMenuObject->bIsStartButtonPressed)
     {
       // AudioManager.PlayWaveform(MainMenuObject->ClickSound);
-      InitializeGameState();
+      InitializeGameState(true);
       Engine::Get()->AudioManager.Toggle(MainMenuObject->ClickSound);
       SetCurrentState(EGameState::GAME_LOOP);
     }
@@ -138,6 +201,14 @@ void GameStateObject::Tick(float DeltaTime)
       return;
     }
 
+    // If we've completed the level, end the round (Probably show end_round
+    // stats, and then initiate new level)
+    if (GetNumBricksRemaining() <= 0)
+    {
+      SetCurrentState(EGameState::END_ROUND);
+      return;
+    }
+
     if (Engine::Get()->GetKey(olc::Key::ESCAPE).bPressed)
     {
       SetCurrentState(EGameState::PAUSED);
@@ -152,6 +223,8 @@ void GameStateObject::Tick(float DeltaTime)
   break;
 
   case EGameState::END_ROUND:
+    InitializeGameState(false);
+    SetCurrentState(EGameState::GAME_LOOP);
     break;
 
   case EGameState::END_GAME:
@@ -163,7 +236,7 @@ void GameStateObject::Tick(float DeltaTime)
     if (GameOverMenuObject->bIsNewGameButtonPressed)
     {
       Engine::Get()->AudioManager.Toggle(GameOverMenuObject->ClickSound);
-      InitializeGameState();
+      InitializeGameState(true);
       SetCurrentState(EGameState::GAME_LOOP);
       break;
     }
@@ -194,6 +267,12 @@ void GameStateObject::SetCurrentState(EGameState NewState)
   CurrentGameState = NewState;
 }
 
+int GameStateObject::GetNumBricksRemaining() { return NumBricksForLevel; }
+void GameStateObject::SetNumBricksRemaining(int InNumBricks)
+{
+  NumBricksForLevel = InNumBricks;
+}
+
 void GameStateObject::ApplyRandomUpgrade()
 {
   std::random_device RandomDevice;
@@ -206,8 +285,32 @@ void GameStateObject::ApplyRandomUpgrade()
   int RandomIndex = Distrobution(Generator);
 
   std::string ChosenUpgradeType = AvailableUpgrades[RandomIndex];
+
+  // Check if an upgrade of this type already exists and is active, if so, we
+  // want to refresh it instead of adding another!
+  std::vector<std::shared_ptr<BaseObject>> Upgrades =
+      Engine::Get()->GetGameObjectOfType<BaseUpgrade>();
+
+  for (auto Obj : Upgrades)
+  {
+    if (std::shared_ptr<BaseUpgrade> Upgrade =
+            std::dynamic_pointer_cast<BaseUpgrade>(Obj))
+    {
+      if (Upgrade->Name == ChosenUpgradeType)
+      {
+        Upgrade->Reset();
+        return;
+      }
+    }
+  }
+
+  // Otherwise, we just add a new upgrade
   std::shared_ptr<BaseUpgrade> ChosenUpgrade =
       UpgradeFactoryObject->CreateUpgrade(ChosenUpgradeType);
+
+  // Set the Name of the object to the stringified type name for later use in
+  // debug UI
+  ChosenUpgrade->Name = ChosenUpgradeType;
 
   Engine::Get()->AddNewGameObject(ChosenUpgrade);
 }

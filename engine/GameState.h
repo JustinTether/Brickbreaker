@@ -1,7 +1,6 @@
 #pragma once
 #include "lib/olcPixelGameEngine.h"
 #include "upgrades/BaseUpgrade.h"
-#include "upgrades/IncreaseBatWidth.h"
 #include "upgrades/UpgradeFactory.h"
 
 #include <vector>
@@ -35,11 +34,13 @@ public:
   EGameState GetCurrentState();
   int GetNumBallsRemaining();
   void SetNumBallsRemaining(int Num);
+  int GetNumBricksRemaining();
+  void SetNumBricksRemaining(int InBricksRemaning);
   bool IsGameOver();
   void ResetGame();
   void Tick(float DeltaTime);
   void ApplyRandomUpgrade();
-  void InitializeGameState();
+  void InitializeGameState(bool bShouldReset);
 
   int MapWidth = 24;
   int MapHeight = 30;
@@ -51,4 +52,6 @@ private:
   PauseMenu* PauseMenuObject;
   GameOverGUI* GameOverMenuObject;
   Hud* HudObject;
+  void GenerateRandomLevel();
+  int NumBricksForLevel;
 };

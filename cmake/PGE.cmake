@@ -45,7 +45,7 @@ function(pge_set_emscripten_options project_name)
 
     else()
         if (UNIX)
-      target_link_libraries(${project_name} PRIVATE -lX11 -lGL -lpthread -lpng -ldl -lm -lstdc++)
+      target_link_libraries(${project_name} PRIVATE -ggdb -lX11 -lGL -lpthread -lpng -ldl -lm -lstdc++)
         endif (UNIX)
     endif()
 endfunction()

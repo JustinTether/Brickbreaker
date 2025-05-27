@@ -21,6 +21,7 @@ public:
   virtual void Tick(Engine* Engine, float DeltaTime);
 
   std::string GUUID;
+  std::string Name;
 };
 
 #endif // BASEOBJECT_H

@@ -36,4 +36,5 @@ void IncreaseBatWidthUpgrade::RemoveUpgrade(Engine* Engine)
   std::shared_ptr<Bat> UserBat = std::static_pointer_cast<Bat>(BatObjects[0]);
 
   UserBat->BatWidth = OldBatWidth;
+  bShouldBeGCd = true;
 }
