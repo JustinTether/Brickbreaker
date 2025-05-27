@@ -43,7 +43,7 @@ public:
   std::vector<std::shared_ptr<BaseObject>> GetGameObjectOfType()
   {
     std::vector<std::shared_ptr<BaseObject>> FoundObjects;
-    for (std::shared_ptr<BaseObject> Obj : GameObjects)
+    for (std::shared_ptr<BaseObject>& Obj : GameObjects)
     {
       if (std::shared_ptr<T> CastedObject = std::dynamic_pointer_cast<T>(Obj))
       {

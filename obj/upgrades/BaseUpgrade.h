@@ -9,13 +9,15 @@ public:
   BaseUpgrade(float UpgradeLifespan);
   virtual void Update(Engine* Engine, float fElapsedTime) override;
   float TimeRemaining;
+  float UpgradeLifespan;
+  virtual void Reset();
 
 private:
   float UpgradeAppliedTime;
   float StartTime;
   virtual void RemoveUpgrade(Engine* Engine);
   virtual void ApplyUpgrade(Engine* Engine);
-  float UpgradeLifespan;
   void Initialize(Engine* Engine);
   bool bInitialized = false;
+  float InitialLifespan;
 };

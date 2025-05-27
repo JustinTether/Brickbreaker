@@ -31,4 +31,5 @@ void NewBallsUpgrade::RemoveUpgrade(Engine* Engine)
   // Balls should handle themselves, so we should just clear our vector so we're
   // not dangling in memory
   ActiveUpgrades.clear();
+  bShouldBeGCd = true;
 }

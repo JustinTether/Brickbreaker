@@ -51,7 +51,7 @@ add_executable(BrickBreaker
     obj/BaseBrick.cpp
     obj/Bat.h)
 
-if (${CMAKE_CXX_COMPILER} MATCHES ".*em[+][+]")
+if (${CMAKE_CXX_COMPILER} MATCHES ".*em[c][c]")
   set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "index")
 else()
    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "BrickBreaker")

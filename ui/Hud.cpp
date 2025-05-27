@@ -1,6 +1,5 @@
 #include "Hud.h"
 #include "../engine/engine.h"
-#include "../lib/olcPGEX_QuickGUI.h"
 #include "MainMenu.h"
 #include "engine/Clay_Renderer_PGE.h"
 #include "engine/GameState.h"
@@ -12,6 +11,7 @@ void Hud::Draw(Engine* Engine)
 {
   ClayPGERenderer::UpdateClayState(Engine);
   Clay_BeginLayout();
+  UIStrings.clear();
   // Layout
 
   CLAY({.id = CLAY_ID("HUDContainer"),
@@ -47,13 +47,14 @@ void Hud::Draw(Engine* Engine)
                   CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
                                     .fontSize = 8}));
 
-        std::string NumBallsRemaining =
-            std::to_string(Engine->GameState->GetNumBallsRemaining());
+        UIStrings.push_back(
+            std::to_string(Engine->GameState->GetNumBallsRemaining()));
 
-        // This is a bit janky, but CLAY_STRING macro expects a string literal..
+        const std::string& NumBallsRemaining = UIStrings.back();
+
+        // This is a bit hanky, but CLAY_STRING macro expects a string literal..
         // Better to just construct the struct ourselves when dealing with
-        // dynamic strings All of this is still better than pixel-perfect
-        // layouting our UI thank goodness
+        // dynamic strings
         Clay_String CString_BallsRemaining = {
             .length = static_cast<int32_t>(NumBallsRemaining.length()),
             .chars = NumBallsRemaining.c_str()};
@@ -65,8 +66,7 @@ void Hud::Draw(Engine* Engine)
 
       std::vector<std::shared_ptr<BaseObject>> CurrentUpgrades =
           Engine::Get()->GetGameObjectOfType<BaseUpgrade>();
-      std::cout << "Number of upgrades in vector: " << CurrentUpgrades.size()
-                << std::endl;
+
       for (std::shared_ptr<BaseObject> Obj : CurrentUpgrades)
       {
         if (!Obj)
@@ -78,26 +78,38 @@ void Hud::Draw(Engine* Engine)
         std::shared_ptr<BaseUpgrade> Upgrade =
             std::static_pointer_cast<BaseUpgrade>(Obj);
 
-        // Create a new Text object for each upgrade with the current duration
-        Clay_String CString_UpgradeName = {
-            .length = static_cast<int32_t>(Upgrade->Name.length()),
-            .chars = Obj->Name.c_str()};
-        CLAY_TEXT(CString_UpgradeName,
-                  CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
-                                    .fontSize = 8}));
+        CLAY({.layout = {.sizing = {.width = CLAY_SIZING_FIT(0),
+                                    .height = CLAY_SIZING_FIT(0)},
+                         .padding = {.left = (uint16_t)Engine->TileSize.x,
+                                     .bottom = 3},
+                         .childGap = 3,
+                         .childAlignment = {.x = CLAY_ALIGN_X_LEFT,
+                                            .y = CLAY_ALIGN_Y_BOTTOM},
+                         .layoutDirection = CLAY_LEFT_TO_RIGHT}})
+        { // UpgradeContainer
 
-        std::string NumTimeRemaining = std::to_string(Upgrade->TimeRemaining);
+          // Create a new Text object for each upgrade with the current duration
+          UIStrings.push_back(Upgrade->Name);
+          const std::string& UpgradeName = UIStrings.back();
 
-        // This is a bit janky, but CLAY_STRING macro expects a string
-        // literal.. Better to just construct the struct ourselves when
-        // dealing with dynamic strings All of this is still better than
-        // pixel-perfect layouting our UI thank goodness
-        Clay_String CString_TimeRemaining = {
-            .length = static_cast<int32_t>(NumTimeRemaining.length()),
-            .chars = NumTimeRemaining.c_str()};
-        CLAY_TEXT(CString_TimeRemaining,
-                  CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
-                                    .fontSize = 8}));
+          Clay_String CString_UpgradeName = {
+              .length = static_cast<int32_t>(UpgradeName.length()),
+              .chars = UpgradeName.c_str()};
+
+          CLAY_TEXT(CString_UpgradeName,
+                    CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
+                                      .fontSize = 8}));
+
+          UIStrings.push_back(std::to_string(Upgrade->UpgradeLifespan));
+          const std::string& UpgradeLifespan = UIStrings.back();
+
+          Clay_String CString_TimeRemaining = {
+              .length = static_cast<int32_t>(UpgradeLifespan.length()),
+              .chars = UpgradeLifespan.c_str()};
+          CLAY_TEXT(CString_TimeRemaining,
+                    CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
+                                      .fontSize = 8}));
+        }
       }
 
     } // END TEXT CONTAINER

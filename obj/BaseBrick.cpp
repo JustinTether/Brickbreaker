@@ -63,6 +63,11 @@ void BaseBrick::OnCollide()
 
   if (MaxHits == 0)
   {
+
+    // Decrement bricks count
+    Engine::Get()->GameState->SetNumBricksRemaining(
+        Engine::Get()->GameState->GetNumBricksRemaining() - 1);
+
     // Determine if we're supposed to be an upgrade block, there should be some
     // chance for this to occur
     // This is just a 25% chance, but should honestly be a more sophisticated

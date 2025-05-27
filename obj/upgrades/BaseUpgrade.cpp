@@ -3,7 +3,8 @@
 
 BaseUpgrade::BaseUpgrade(float InUpgradeLifespan)
 {
-  UpgradeLifespan = InUpgradeLifespan;
+  InitialLifespan = InUpgradeLifespan;
+  UpgradeLifespan = InitialLifespan;
   bInitialized = false;
 }
 
@@ -13,15 +14,9 @@ void BaseUpgrade::Initialize(Engine* Engine)
   bInitialized = true;
 }
 
-void BaseUpgrade::ApplyUpgrade(Engine* Engine)
-{
-  
-}
+void BaseUpgrade::ApplyUpgrade(Engine* Engine) {}
 
-void BaseUpgrade::RemoveUpgrade(Engine* Engine)
-{
-  bShouldBeGCd = true;
-}
+void BaseUpgrade::RemoveUpgrade(Engine* Engine) { bShouldBeGCd = true; }
 
 void BaseUpgrade::Update(Engine* Engine, float fElapsedTime)
 {
@@ -30,7 +25,7 @@ void BaseUpgrade::Update(Engine* Engine, float fElapsedTime)
     return;
   }
 
-  if(!bInitialized)
+  if (!bInitialized)
   {
     Initialize(Engine);
   }
@@ -38,13 +33,15 @@ void BaseUpgrade::Update(Engine* Engine, float fElapsedTime)
   UpgradeLifespan -= fElapsedTime;
   std::cout << "New Lifespan: " << UpgradeLifespan << "\n";
 
-  if(UpgradeLifespan <= 0.0f)
+  if (UpgradeLifespan <= 0.0f)
   {
     std::cout << "Removing upgrade, lifespan: " << UpgradeLifespan << "\n";
     RemoveUpgrade(Engine);
   }
-
 }
 
-
-
+void BaseUpgrade::Reset()
+{
+  UpgradeLifespan = InitialLifespan;
+  ApplyUpgrade(Engine::Get());
+}

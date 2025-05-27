@@ -1,5 +1,6 @@
 #pragma once
 #include "Bat.h"
+#include "engine/GameState.h"
 #include "engine/engine.h"
 
 Bat::Bat(olc::PixelGameEngine* Engine)
@@ -14,9 +15,10 @@ Bat::Bat(olc::PixelGameEngine* Engine)
 
 void Bat::Draw(Engine* EngineInstance)
 {
-  EngineInstance->FillRect(int(BatPosition),
-                           EngineInstance->ScreenHeight() - 20, int(BatWidth),
-                           int(BatHeight), olc::YELLOW);
+  EngineInstance->FillRect(
+      int(BatPosition),
+      (EngineInstance->GameState->MapHeight * EngineInstance->TileSize.y) - 20,
+      int(BatWidth), int(BatHeight), olc::YELLOW);
 }
 
 void Bat::Update(Engine* EngineInstance, float DeltaTime)
@@ -35,7 +37,8 @@ void Bat::Update(Engine* EngineInstance, float DeltaTime)
   if (BatPosition < 12.0f)
     BatPosition = 12.0f;
   if (BatPosition + BatWidth >
-      float(EngineInstance->ScreenWidth() - EngineInstance->TileSize.x))
+      float((EngineInstance->GameState->MapWidth * EngineInstance->TileSize.x) -
+            EngineInstance->TileSize.x))
     BatPosition = float(EngineInstance->ScreenWidth() -
                         EngineInstance->TileSize.x - BatWidth);
 }

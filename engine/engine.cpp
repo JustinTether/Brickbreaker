@@ -45,7 +45,7 @@ bool Engine::OnUserCreate()
                   (Clay_ErrorHandler){HandleClayErrors});
   Clay_SetMeasureTextFunction(&ClayPGERenderer::MeasureText, nullptr);
 
-  GameState->InitializeGameState();
+  GameState->InitializeGameState(true);
   return true;
 }
 
@@ -81,18 +81,17 @@ void Engine::GCObjects()
 {
   std::cout << "Initiating GC!" << std::endl;
   int GCCount = 0;
-  for (std::shared_ptr<BaseObject> GameObj : GameObjects)
-  {
-    if (GameObj && GameObj->bShouldBeGCd)
-    {
-      GameObjects.erase(
-          std::remove(GameObjects.begin(), GameObjects.end(), GameObj),
-          GameObjects.end());
-
-      GCCount++;
-    }
-  }
-
+  GameObjects.erase(std::remove_if(GameObjects.begin(), GameObjects.end(),
+                                   [&](const std::shared_ptr<BaseObject>& Obj)
+                                   {
+                                     if (Obj && Obj->bShouldBeGCd)
+                                     {
+                                       GCCount++;
+                                       return true;
+                                     }
+                                     return false;
+                                   }),
+                    GameObjects.end());
   std::cout << "GC Complete, num objects GC'd: " << GCCount << std::endl;
 }
 

@@ -49,7 +49,8 @@ void Ball::Update(Engine* Engine, float DeltaTime)
 
   // Check if modified ball position is at the same y level as the paddle
   if (ModifiedBallPosition.y >=
-      (Engine->ScreenHeight() - 20) - UserBat->BatHeight)
+      ((Engine->GameState->MapHeight * Engine->TileSize.y) - 20) -
+          UserBat->BatHeight)
   {
     // Check if the modified position is at the same x offset
     if (ModifiedBallPosition.x > BatPosition &&
@@ -80,7 +81,8 @@ void Ball::Update(Engine* Engine, float DeltaTime)
   }
 
   // Check if ball has gone off screen
-  if (ModifiedBallPosition.y > Engine->ScreenHeight())
+  if (ModifiedBallPosition.y >
+      Engine->GameState->MapHeight * Engine->TileSize.y)
   {
     std::cout << "Ball outside of play, resetting\n";
     ResetBall(Engine);
