@@ -30,9 +30,6 @@ GameStateObject::GameStateObject()
   UpgradeFactoryObject->RegisterUpgrade(
       "ThreeNewBallsUpgrade",
       []() { return std::make_shared<NewBallsUpgrade>(10.0, 3); });
-
-  BackgroundLoopID =
-      AudioManager::Get()->RegisterNewSound("assets/sounds/AmbientLoop.wav");
 }
 
 void GameStateObject::InitializeGameState(bool bShouldReset)
@@ -258,7 +255,7 @@ void GameStateObject::Tick(float DeltaTime)
 void GameStateObject::ResetGame()
 {
   NumBallsRemaining = 3;
-  AudioManager::Get()->PlaySound(BackgroundLoopID, true);
+  AudioManager::Get()->StartBackgroundMusic();
 }
 
 EGameState GameStateObject::GetCurrentState() { return CurrentGameState; }

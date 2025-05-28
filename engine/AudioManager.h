@@ -15,6 +15,9 @@ public:
 
   void PlaySound(int InSoundID, bool bShouldLoop = false);
   const int& RegisterNewSound(std::string SoundFilePath);
+  void StartBackgroundMusic();
+  void StopBackgroundMusic();
+  void Tick();
 
 private:
   static AudioManager* s_instance;
@@ -24,4 +27,6 @@ private:
 
   float GlobalVolume;
   std::vector<int> RegisteredSoundIDs;
+  std::vector<int> BackgroundMusicIDs;
+  int CurrentlyPlayingBackgroundID;
 };

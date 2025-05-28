@@ -16,6 +16,10 @@ add_executable(BrickBreaker
     lib/olcPGEX_QuickGUI.h
     lib/olcPixelGameEngine.h
     lib/miniaudio.h
+    lib/miniaudio_libopus.h
+    lib/miniaudio_libopus.c
+    lib/miniaudio_libvorbis.h
+    lib/miniaudio_libvorbis.c
     lib/olcPGEX_MiniAudio.h
     lib/clay.h
     obj/Ball.cpp
@@ -53,7 +57,7 @@ add_executable(BrickBreaker
     obj/BaseBrick.cpp
     obj/Bat.h)
 
-if (${CMAKE_CXX_COMPILER} MATCHES ".*em[c][c]")
+if (${CMAKE_CXX_COMPILER} MATCHES ".*em[+][+]")
   set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "index")
 else()
    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "BrickBreaker")
@@ -82,6 +86,22 @@ TARGET_LINK_LIBRARIES(BrickBreaker PRIVATE pthread)
 target_link_libraries(BrickBreaker PRIVATE stdc++fs)
 
 ]===]
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(OPUSFILE REQUIRED opusfile opus ogg)
+pkg_check_modules(VORBIS REQUIRED vorbisfile vorbis ogg)
+
+# Link against the Opusfile, Opus, and Ogg libraries
+target_link_libraries(BrickBreaker PUBLIC ${OPUSFILE_LIBRARIES})
+
+# Add include directories
+target_include_directories(BrickBreaker PUBLIC ${OPUSFILE_INCLUDE_DIRS})
+
+# 4. Link the executable with the found libraries
+target_link_libraries(BrickBreaker PUBLIC ${VORBIS_LIBRARIES})
+
+# 5. Add the necessary include directories
+target_include_directories(BrickBreaker PUBLIC ${VORBIS_INCLUDE_DIRS})
 
 include(cmake/PGE.cmake)
 pge_set_emscripten_options(BrickBreaker)
