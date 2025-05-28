@@ -1,0 +1,28 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "default",
+            "description": "default CXX compile",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${workspaceFolder}/",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+                "CMAKE_CXX_COMPILER": "g++"
+
+            }
+        },
+        {
+            "name": "default-emscripten",
+            "description": "Emscripten build",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${workspaceFolder}/",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
+                "CMAKE_CXX_COMPILER": "emcc"
+            }
+        }
+    ]
+}

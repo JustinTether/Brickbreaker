@@ -54,4 +54,5 @@ private:
   Hud* HudObject;
   void GenerateRandomLevel();
   int NumBricksForLevel;
+  int BackgroundLoopID;
 };

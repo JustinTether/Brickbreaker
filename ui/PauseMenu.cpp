@@ -1,12 +1,14 @@
-#include "PauseMenu.h"
 #include "../engine/Clay_Renderer_PGE.h"
 #include "../engine/engine.h"
+#include "PauseMenu.h"
+#include "engine/AudioManager.h"
 #include "olcPGEX_QuickGUI.h"
 
 void PauseMenu::Initialize(Engine* Engine)
 {
   bIsInitialized = true;
-  ClickSound = Engine->AudioManager.LoadSound("assets/sounds/click3.wav");
+  ClickSound =
+      AudioManager::Get()->RegisterNewSound("assets/sounds/click3.wav");
 }
 
 void PauseMenu::Draw(Engine* Engine)
@@ -60,18 +62,18 @@ void PauseMenu::Draw(Engine* Engine)
 
       })
       {
-        CLAY_TEXT(CLAY_STRING("Resume"),
-                  CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
-                                    .fontSize = 8}));
+	CLAY_TEXT(CLAY_STRING("Resume"),
+	          CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
+	                            .fontSize = 8}));
 
-        // Handle Mouse clicking the Start button
-        if (Engine->GetMouse(0).bPressed &&
-            Clay_PointerOver(CLAY_ID("ResumeButton")))
-        {
-          bIsResumeButtonClicked = true;
-        }
-        else
-          bIsResumeButtonClicked = false;
+	// Handle Mouse clicking the Start button
+	if (Engine->GetMouse(0).bPressed &&
+	    Clay_PointerOver(CLAY_ID("ResumeButton")))
+	{
+	  bIsResumeButtonClicked = true;
+	}
+	else
+	  bIsResumeButtonClicked = false;
       }
     }
   }

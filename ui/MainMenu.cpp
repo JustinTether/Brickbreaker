@@ -1,13 +1,14 @@
-#include "MainMenu.h"
 #include "../engine/Clay_Renderer_PGE.h"
 #include "../engine/engine.h"
 #include "../lib/olcPGEX_MiniAudio.h"
+#include "MainMenu.h"
+#include "engine/AudioManager.h"
 
 void MainMenuGUI::Initialize(Engine* EngineInstance)
 {
 
   ClickSound =
-      EngineInstance->AudioManager.LoadSound("assets/sounds/click3.wav");
+      AudioManager::Get()->RegisterNewSound("assets/sounds/click3.wav");
   bIsInitialized = true;
 }
 
@@ -61,18 +62,18 @@ void MainMenuGUI::Draw(Engine* Engine)
 
       })
       {
-        CLAY_TEXT(CLAY_STRING("Start"),
-                  CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
-                                    .fontSize = 8}));
+	CLAY_TEXT(CLAY_STRING("Start"),
+	          CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
+	                            .fontSize = 8}));
 
-        // Handle Mouse clicking the Start button
-        if (Engine->GetMouse(0).bPressed &&
-            Clay_PointerOver(CLAY_ID("StartButton")))
-        {
-          bIsStartButtonPressed = true;
-        }
-        else
-          bIsStartButtonPressed = false;
+	// Handle Mouse clicking the Start button
+	if (Engine->GetMouse(0).bPressed &&
+	    Clay_PointerOver(CLAY_ID("StartButton")))
+	{
+	  bIsStartButtonPressed = true;
+	}
+	else
+	  bIsStartButtonPressed = false;
       }
       CLAY({.id = CLAY_ID("QuitButton"),
             .layout = {.sizing = {.width = CLAY_SIZING_FIT(0),
@@ -89,9 +90,9 @@ void MainMenuGUI::Draw(Engine* Engine)
 
       })
       {
-        CLAY_TEXT(CLAY_STRING("Quit"),
-                  CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
-                                    .fontSize = 8}));
+	CLAY_TEXT(CLAY_STRING("Quit"),
+	          CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
+	                            .fontSize = 8}));
       };
     }
   };
