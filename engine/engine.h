@@ -2,7 +2,6 @@
 #define ENGINE_H
 #pragma once
 #include "../lib/clay.h"
-#include "../lib/olcPGEX_MiniAudio.h"
 #include "../lib/olcPGEX_QuickGUI.h"
 #include "../lib/olcPixelGameEngine.h"
 class GameStateObject;
@@ -30,9 +29,6 @@ public:
 
   std::unique_ptr<olc::Sprite> TileSheet;
 
-  // Audio Manager through MiniAudio
-  olc::MiniAudio AudioManager;
-
   GameStateObject* GameState;
 
   virtual bool OnUserCreate() override;
@@ -47,7 +43,7 @@ public:
     {
       if (std::shared_ptr<T> CastedObject = std::dynamic_pointer_cast<T>(Obj))
       {
-        FoundObjects.push_back(Obj);
+	FoundObjects.push_back(Obj);
       }
     }
 

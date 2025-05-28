@@ -6,4 +6,6 @@ Makefile
 tags
 .cache/
 cmake_install.cmake
-
+.cmake/*
+*.code-workspace
+.vscode/*

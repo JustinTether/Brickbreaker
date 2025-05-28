@@ -1,8 +1,9 @@
-#include "Ball.h"
 #include "../engine/engine.h"
+#include "Ball.h"
 #include "BaseBrick.h"
 #include "BaseObject.h"
 #include "Bat.h"
+#include "engine/AudioManager.h"
 #include "engine/GameState.h"
 Ball::Ball(Engine* Engine)
 {
@@ -15,7 +16,7 @@ Ball::Ball(Engine* Engine)
   BallVelocity = {static_cast<float>(BallSpeed * cos(BallAngle)),
                   static_cast<float>(BallSpeed * sin(BallAngle))};
   BallPosition = olc::vf2d(12.5f, 15.5f);
-  HitSound = Engine->AudioManager.LoadSound("assets/sounds/hit.wav");
+  HitSound = AudioManager::Get()->RegisterNewSound("assets/sounds/hit.wav");
 }
 
 void Ball::Draw(Engine* Engine)
@@ -26,8 +27,9 @@ void Ball::Draw(Engine* Engine)
 void Ball::Update(Engine* Engine, float DeltaTime)
 {
   BallPosition += BallVelocity * BallSpeed * DeltaTime;
-  // std::cout << "Ball Position: " << BallPosition * Engine->TileSize << "\n";
-  // std::cout << "Bat Position: " << Engine->UserBat->BatPosition << "\n";
+  // std::cout << "Ball Position: " << BallPosition * Engine->TileSize <<
+  // "\n"; std::cout << "Bat Position: " << Engine->UserBat->BatPosition <<
+  // "\n";
 
   bool bHasHitTile = false;
   bHasHitTile |= TestCollisionPoint(olc::vf2d(0, -1), Engine);
@@ -59,17 +61,18 @@ void Ball::Update(Engine* Engine, float DeltaTime)
       BallVelocity.y *= -1.0;
 
       // Change X based on where the ball hit
-      // Grab the 'HitPosition' of the ball, 0 for far left edge, 1 for far
-      // right edge
+      // Grab the 'HitPosition' of the ball, 0 for far left edge, 1 for
+      // far right edge
       float HitPosition =
           ((BallPosition.x * Engine->TileSize.x) - BatPosition) /
           UserBat->BatWidth;
 
-      // Create an angle multiplier based off of this position -0.5 so that the
-      // modified position is between -0.5 and +0.5, POW'd
+      // Create an angle multiplier based off of this position -0.5 so
+      // that the modified position is between -0.5 and +0.5, POW'd
       float AngleMultiplier = pow((HitPosition - 0.5f) * 2.0f, 3);
 
-      // Calculate a new angle in Radians so that the sin/cos functions work
+      // Calculate a new angle in Radians so that the sin/cos functions
+      // work
       float MaxAngle = 60.0f;
       float AngleRadians = (MaxAngle * AngleMultiplier) * (M_PI / 180.0f);
 
@@ -158,7 +161,7 @@ bool Ball::TestCollisionPoint(olc::vf2d point, Engine* Engine)
 
   if (bTileHit)
   {
-    Engine->AudioManager.Play(HitSound);
+    AudioManager::Get()->PlaySound(HitSound);
   }
 
   // Collision response

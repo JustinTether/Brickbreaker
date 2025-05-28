@@ -1,10 +1,9 @@
-#include "engine.h"
 #include "Clay_Renderer_PGE.h"
 #include "GameState.h"
+#include "engine.h"
 #include "obj/BaseObject.h"
 #include <memory>
 
-#define OLC_PGEX_SOUND_H
 Engine* Engine::s_instance = nullptr;
 
 Engine::Engine()
@@ -68,7 +67,7 @@ bool Engine::OnUserUpdate(float fElapsedTime)
     for (std::shared_ptr<BaseObject> GameObj : GameObjects)
     {
       if (GameObj && GameObj->bShouldBeGCd)
-        continue;
+	continue;
 
       GameObj->Tick(this, fElapsedTime);
     }

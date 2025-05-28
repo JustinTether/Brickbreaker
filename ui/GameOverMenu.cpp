@@ -1,11 +1,13 @@
-#include "GameOverMenu.h"
 #include "../engine/Clay_Renderer_PGE.h"
 #include "../lib/olcPGEX_MiniAudio.h"
+#include "GameOverMenu.h"
+#include "engine/AudioManager.h"
 #include "engine/engine.h"
 
 void GameOverGUI::Initialize(Engine* Engine)
 {
-  ClickSound = Engine->AudioManager.LoadSound("assets/sounds/click3.wav");
+  ClickSound =
+      AudioManager::Get()->RegisterNewSound("assets/sounds/click3.wav");
   bIsInitialized = true;
 }
 
@@ -64,18 +66,18 @@ void GameOverGUI::Draw(Engine* Engine)
 
       })
       {
-        CLAY_TEXT(CLAY_STRING("New Game"),
-                  CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
-                                    .fontSize = 8}));
+	CLAY_TEXT(CLAY_STRING("New Game"),
+	          CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
+	                            .fontSize = 8}));
 
-        // Handle Mouse clicking the Start button
-        if (Engine->GetMouse(0).bPressed &&
-            Clay_PointerOver(CLAY_ID("NewGameButton")))
-        {
-          bIsNewGameButtonPressed = true;
-        }
-        else
-          bIsNewGameButtonPressed = false;
+	// Handle Mouse clicking the Start button
+	if (Engine->GetMouse(0).bPressed &&
+	    Clay_PointerOver(CLAY_ID("NewGameButton")))
+	{
+	  bIsNewGameButtonPressed = true;
+	}
+	else
+	  bIsNewGameButtonPressed = false;
       }
       CLAY({.id = CLAY_ID("MainMenuButton"),
             .layout = {.sizing = {.width = CLAY_SIZING_FIT(0),
@@ -92,19 +94,19 @@ void GameOverGUI::Draw(Engine* Engine)
 
       })
       {
-        CLAY_TEXT(CLAY_STRING("MainMenu"),
-                  CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
-                                    .fontSize = 8}));
+	CLAY_TEXT(CLAY_STRING("MainMenu"),
+	          CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
+	                            .fontSize = 8}));
 
-        if (Engine->GetMouse(0).bPressed &&
-            Clay_PointerOver(CLAY_ID("MainMenuButton")))
-        {
-          bIsMainMenuButtonPressed = true;
-        }
-        else
-        {
-          bIsMainMenuButtonPressed = false;
-        }
+	if (Engine->GetMouse(0).bPressed &&
+	    Clay_PointerOver(CLAY_ID("MainMenuButton")))
+	{
+	  bIsMainMenuButtonPressed = true;
+	}
+	else
+	{
+	  bIsMainMenuButtonPressed = false;
+	}
       };
     }
   };

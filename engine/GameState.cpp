@@ -1,6 +1,7 @@
-#include "GameState.h"
 #include "BaseBrick.h"
+#include "GameState.h"
 #include "engine.h"
+#include "engine/AudioManager.h"
 #include "obj/Ball.h"
 #include "obj/Bat.h"
 #include "ui/GameOverMenu.h"
@@ -29,6 +30,9 @@ GameStateObject::GameStateObject()
   UpgradeFactoryObject->RegisterUpgrade(
       "ThreeNewBallsUpgrade",
       []() { return std::make_shared<NewBallsUpgrade>(10.0, 3); });
+
+  BackgroundLoopID =
+      AudioManager::Get()->RegisterNewSound("assets/sounds/AmbientLoop.wav");
 }
 
 void GameStateObject::InitializeGameState(bool bShouldReset)
@@ -58,33 +62,33 @@ void GameStateObject::InitializeGameState(bool bShouldReset)
 
       if (x == 0 || y == 0 || x == MapWidth - 1)
       {
-        NewBrick->bIsWall = true;
+	NewBrick->bIsWall = true;
       }
       else
       {
-        NewBrick->bIsAir = true;
-        NewBrick->bIsWall = false;
+	NewBrick->bIsAir = true;
+	NewBrick->bIsWall = false;
       }
 
       if (x > 2 && x <= 20 && y > 3 && y <= 5)
       {
-        NewBrick->bIsAir = false;
-        NewBrick->TileOffset = 1;
-        NewBrick->MaxHits = 1;
+	NewBrick->bIsAir = false;
+	NewBrick->TileOffset = 1;
+	NewBrick->MaxHits = 1;
       }
 
       if (x > 2 && x <= 20 && y > 5 && y <= 7)
       {
-        NewBrick->bIsAir = false;
-        NewBrick->TileOffset = 2;
-        NewBrick->MaxHits = 2;
+	NewBrick->bIsAir = false;
+	NewBrick->TileOffset = 2;
+	NewBrick->MaxHits = 2;
       }
 
       if (x > 2 && x <= 20 && y > 7 && y <= 9)
       {
-        NewBrick->bIsAir = false;
-        NewBrick->TileOffset = 3;
-        NewBrick->MaxHits = 3;
+	NewBrick->bIsAir = false;
+	NewBrick->TileOffset = 3;
+	NewBrick->MaxHits = 3;
       }
 
       NewBrick->XPosition = x;
@@ -114,23 +118,23 @@ void GameStateObject::GenerateRandomLevel()
 
       if (x == 0 || y == 0 || x == MapWidth - 1)
       {
-        NewBrick->bIsWall = true;
+	NewBrick->bIsWall = true;
       }
       else
       {
-        NewBrick->bIsAir = true;
-        NewBrick->bIsWall = false;
+	NewBrick->bIsAir = true;
+	NewBrick->bIsWall = false;
       }
 
       if (x > 2 && x <= 20 && y > 3 && y <= 9)
       {
 
-        NewBrick->bIsAir = static_cast<bool>(AirDistribution(Generator));
-        NewBrick->MaxHits = BlockDistribution(Generator);
-        NewBrick->TileOffset = NewBrick->MaxHits;
+	NewBrick->bIsAir = static_cast<bool>(AirDistribution(Generator));
+	NewBrick->MaxHits = BlockDistribution(Generator);
+	NewBrick->TileOffset = NewBrick->MaxHits;
 
-        if (!NewBrick->bIsAir)
-          NumBricks++;
+	if (!NewBrick->bIsAir)
+	  NumBricks++;
       }
 
       NewBrick->XPosition = x;
@@ -156,9 +160,8 @@ void GameStateObject::Tick(float DeltaTime)
 
     if (MainMenuObject->bIsStartButtonPressed)
     {
-      // AudioManager.PlayWaveform(MainMenuObject->ClickSound);
       InitializeGameState(true);
-      Engine::Get()->AudioManager.Toggle(MainMenuObject->ClickSound);
+      AudioManager::Get()->PlaySound(MainMenuObject->ClickSound);
       SetCurrentState(EGameState::GAME_LOOP);
     }
     MainMenuObject->Draw(Engine::Get());
@@ -175,7 +178,7 @@ void GameStateObject::Tick(float DeltaTime)
     if (PauseMenuObject->bIsResumeButtonClicked ||
         Engine::Get()->GetKey(olc::Key::ESCAPE).bPressed)
     {
-      Engine::Get()->AudioManager.Toggle(PauseMenuObject->ClickSound);
+      AudioManager::Get()->PlaySound(PauseMenuObject->ClickSound);
       PauseMenuObject->bIsResumeButtonClicked = false;
       SetCurrentState(EGameState::GAME_LOOP);
       return;
@@ -235,7 +238,7 @@ void GameStateObject::Tick(float DeltaTime)
 
     if (GameOverMenuObject->bIsNewGameButtonPressed)
     {
-      Engine::Get()->AudioManager.Toggle(GameOverMenuObject->ClickSound);
+      AudioManager::Get()->PlaySound(GameOverMenuObject->ClickSound);
       InitializeGameState(true);
       SetCurrentState(EGameState::GAME_LOOP);
       break;
@@ -243,7 +246,7 @@ void GameStateObject::Tick(float DeltaTime)
 
     if (GameOverMenuObject->bIsMainMenuButtonPressed)
     {
-      Engine::Get()->AudioManager.Toggle(GameOverMenuObject->ClickSound);
+      AudioManager::Get()->PlaySound(GameOverMenuObject->ClickSound);
       SetCurrentState(EGameState::MAIN_MENU);
       break;
     }
@@ -252,7 +255,11 @@ void GameStateObject::Tick(float DeltaTime)
   }
 }
 
-void GameStateObject::ResetGame() { NumBallsRemaining = 3; }
+void GameStateObject::ResetGame()
+{
+  NumBallsRemaining = 3;
+  AudioManager::Get()->PlaySound(BackgroundLoopID, true);
+}
 
 EGameState GameStateObject::GetCurrentState() { return CurrentGameState; }
 
@@ -298,8 +305,8 @@ void GameStateObject::ApplyRandomUpgrade()
     {
       if (Upgrade->Name == ChosenUpgradeType)
       {
-        Upgrade->Reset();
-        return;
+	Upgrade->Reset();
+	return;
       }
     }
   }

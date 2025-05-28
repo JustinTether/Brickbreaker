@@ -42,6 +42,8 @@ add_executable(BrickBreaker
     engine/GameState.cpp
     engine/Clay_Renderer_PGE.h
     engine/Clay_Renderer_PGE.cpp
+    engine/AudioManager.h
+    engine/AudioManager.cpp
     engine/guuid.h
     main.cpp
     main.h
