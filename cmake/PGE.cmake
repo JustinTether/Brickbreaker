@@ -9,6 +9,12 @@ if (PGE_USE_EMSCRIPTEN)
     # Compile to HTML5
     set(CMAKE_EXECUTABLE_SUFFIX .html)
     # find_package(Emscripten REQUIRED)
+
+    # This is genuinely such a pain in the ass but we had to compile opus support into emscripten manually
+    # and I could not find a way for CMake to find these paths without mangling them, so they're hardcoded
+    # not really ideal tbh but i'm not smart enough (yet) to find a more elegant solution around this problem
+    find_library(OPUS_STATIC_LIB NAMES opus PATHS "/home/jundy/emsdk_libs/install/lib" NO_CMAKE_FIND_ROOT_PATH NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+    find_library(OPUSFILE_STATIC_LIB NAMES opusfile PATHS "/home/jundy/emsdk_libs/install/lib" NO_CMAKE_FIND_ROOT_PATH NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 endif()
 
 
@@ -28,9 +34,18 @@ set(CMAKE_CXX_STANDARD 20)
 # Usage: pge_set_emscripten_options(target)
 function(pge_set_emscripten_options project_name)
     if (PGE_USE_EMSCRIPTEN)
-        set(PGE_LINKER_OPTIONS -sALLOW_MEMORY_GROWTH=1 -sSTACK_SIZE=131072 -sMAX_WEBGL_VERSION=2 -sMIN_WEBGL_VERSION=2 -sUSE_LIBPNG=1 -sUSE_ZLIB=1 --emrun)
+        set(PGE_LINKER_OPTIONS -sALLOW_MEMORY_GROWTH=1 -sSTACK_SIZE=131072 -sMAX_WEBGL_VERSION=2 -sMIN_WEBGL_VERSION=2 -sUSE_LIBPNG=1 -sUSE_ZLIB=1 -sUSE_VORBIS=1 -sUSE_OGG=1 --emrun)
         target_link_options(${project_name} PRIVATE -sEXCEPTION_CATCHING_ALLOWED=[compile+link])
         target_link_options(${project_name} PRIVATE -sEXPORTED_RUNTIME_METHODS=["HEAPF32"])
+
+        set(OPUSFILE_LIB "/home/jundy/emsdk_libs/install/include/opus")
+        target_include_directories(BrickBreaker PUBLIC ${OPUSFILE_LIB})
+        
+        target_link_libraries(BrickBreaker PUBLIC
+          ${OPUSFILE_STATIC_LIB}
+          ${OPUS_STATIC_LIB}
+          )
+
         if (PGE_USE_EMSCRIPTEN)
       target_link_options(${project_name} PRIVATE ${PGE_LINKER_OPTIONS} --preload-file ${PGE_ASSET_FOLDER})
         else()

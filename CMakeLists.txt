@@ -64,44 +64,25 @@ else()
 endif()
 
 add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:-g;")
-#[===[
-set_target_properties(BrickBreaker PROPERTIES OUTPUT_NAME "BrickBreaker") 
-message(STATUS "Looking for X11...")
-find_package(X11 REQUIRED)
-include_directories(${X11_INCLUDE_DIR})
-target_link_libraries(BrickBreaker PRIVATE ${X11_LIBRARIES})
 
-message(STATUS "looking for png...")
-find_package(PNG REQUIRED)
-include_directories(${PNG_INCLUDE_DIR})
-target_link_libraries(BrickBreaker PRIVATE ${PNG_LIBRARIES})
 
-#[===[
-message(STATUS "looking for GL...")
-find_package(OpenGL REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIR})
-target_link_libraries(BrickBreaker PRIVATE ${OPENGL_LIBRARIES})
+if (${CMAKE_CXX_COMPILER} MATCHES ".*g[+][+]")
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(OPUSFILE REQUIRED opusfile opus ogg)
+  pkg_check_modules(VORBIS REQUIRED vorbisfile vorbis ogg)
 
-TARGET_LINK_LIBRARIES(BrickBreaker PRIVATE pthread)
-target_link_libraries(BrickBreaker PRIVATE stdc++fs)
+  # Link against the Opusfile, Opus, and Ogg libraries
+  target_link_libraries(BrickBreaker PUBLIC ${OPUSFILE_LIBRARIES})
 
-]===]
+  # Add include directories
+  target_include_directories(BrickBreaker PUBLIC ${OPUSFILE_INCLUDE_DIRS})
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(OPUSFILE REQUIRED opusfile opus ogg)
-pkg_check_modules(VORBIS REQUIRED vorbisfile vorbis ogg)
+  # 4. Link the executable with the found libraries
+  target_link_libraries(BrickBreaker PUBLIC ${VORBIS_LIBRARIES})
 
-# Link against the Opusfile, Opus, and Ogg libraries
-target_link_libraries(BrickBreaker PUBLIC ${OPUSFILE_LIBRARIES})
-
-# Add include directories
-target_include_directories(BrickBreaker PUBLIC ${OPUSFILE_INCLUDE_DIRS})
-
-# 4. Link the executable with the found libraries
-target_link_libraries(BrickBreaker PUBLIC ${VORBIS_LIBRARIES})
-
-# 5. Add the necessary include directories
-target_include_directories(BrickBreaker PUBLIC ${VORBIS_INCLUDE_DIRS})
+  # 5. Add the necessary include directories
+  target_include_directories(BrickBreaker PUBLIC ${VORBIS_INCLUDE_DIRS})
+endif()
 
 include(cmake/PGE.cmake)
 pge_set_emscripten_options(BrickBreaker)
