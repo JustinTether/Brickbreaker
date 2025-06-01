@@ -4,7 +4,8 @@
 class Engine;
 class ClayPGERenderer;
 
-class MainMenuGUI {
+class MainMenuGUI
+{
 public:
   // ID reference for the click sound
   int ClickSound;
@@ -13,9 +14,11 @@ public:
 
   bool bIsInitialized = false;
 
-  void Initialize(Engine *Engine);
-  void Draw(Engine *Engine);
+  void Initialize(Engine* Engine);
+  void Draw(Engine* Engine);
 
   bool bDebugClay;
   bool bIsStartButtonPressed;
+  bool bIsOptionsButtonPressed;
+  bool bIsQuitButtonPressed;
 };

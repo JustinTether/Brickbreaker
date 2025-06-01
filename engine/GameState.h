@@ -9,11 +9,13 @@ class MainMenuGUI;
 class GameOverGUI;
 class PauseMenu;
 class Hud;
+class OptionsMenu;
 
 enum EGameState
 {
   MAIN_MENU,
   PAUSED,
+  OPTIONS,
   GAME_LOOP,
   END_ROUND,
   END_GAME
@@ -51,6 +53,7 @@ private:
   MainMenuGUI* MainMenuObject;
   PauseMenu* PauseMenuObject;
   GameOverGUI* GameOverMenuObject;
+  OptionsMenu* OptionsMenuObject;
   Hud* HudObject;
   void GenerateRandomLevel();
   int NumBricksForLevel;

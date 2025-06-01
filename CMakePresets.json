@@ -10,7 +10,6 @@
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
                 "CMAKE_CXX_COMPILER": "g++"
-
             }
         },
         {
@@ -18,6 +17,7 @@
             "description": "Emscripten build",
             "generator": "Unix Makefiles",
             "binaryDir": "${workspaceFolder}/",
+            "toolchainFile": "/home/jundy/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "YES",
