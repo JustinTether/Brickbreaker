@@ -14,10 +14,14 @@ public:
   static AudioManager* Get();
 
   void PlaySound(int InSoundID, bool bShouldLoop = false);
-  const int& RegisterNewSound(std::string SoundFilePath);
+  const int& RegisterNewSound(std::string SoundFilePath, bool bIsEffect = true);
   void StartBackgroundMusic();
   void StopBackgroundMusic();
   void Tick();
+  void SetMusicVolume(float InNewVolume);
+  void SetEffectsVolume(float InNewVolume);
+  static float GetMusicVolume();
+  static float GetEffectsVolume();
 
 private:
   static AudioManager* s_instance;
@@ -25,7 +29,8 @@ private:
   // Audio Manager through MiniAudio
   olc::MiniAudio MiniAudio;
 
-  float GlobalVolume;
+  static float EffectsVolume;
+  static float MusicVolume;
   std::vector<int> RegisteredSoundIDs;
   std::vector<int> BackgroundMusicIDs;
   int CurrentlyPlayingBackgroundID;

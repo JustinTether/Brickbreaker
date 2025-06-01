@@ -40,6 +40,8 @@ add_executable(BrickBreaker
     ui/GameOverMenu.h
     ui/Hud.h
     ui/Hud.cpp
+    ui/OptionsMenu.h
+    ui/OptionsMenu.cpp
     engine/engine.h
     engine/engine.cpp
     engine/GameState.h

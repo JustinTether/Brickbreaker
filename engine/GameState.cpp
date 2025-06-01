@@ -7,6 +7,7 @@
 #include "ui/GameOverMenu.h"
 #include "ui/Hud.h"
 #include "ui/MainMenu.h"
+#include "ui/OptionsMenu.h"
 #include "ui/PauseMenu.h"
 #include "upgrades/IncreaseBatWidth.h"
 #include "upgrades/NewBallsUpgrade.h"
@@ -20,6 +21,7 @@ GameStateObject::GameStateObject()
   MainMenuObject = new MainMenuGUI();
   PauseMenuObject = new PauseMenu();
   GameOverMenuObject = new GameOverGUI();
+  OptionsMenuObject = new OptionsMenu();
   HudObject = new Hud();
 
   // Register UpgradeFactory types
@@ -149,6 +151,7 @@ void GameStateObject::Tick(float DeltaTime)
   switch (GetCurrentState())
   {
   case EGameState::MAIN_MENU:
+
     if (MainMenuObject && !MainMenuObject->bIsInitialized)
     {
       MainMenuObject->Initialize(Engine::Get());
@@ -160,6 +163,17 @@ void GameStateObject::Tick(float DeltaTime)
       InitializeGameState(true);
       AudioManager::Get()->PlaySound(MainMenuObject->ClickSound);
       SetCurrentState(EGameState::GAME_LOOP);
+    }
+
+    if (MainMenuObject->bIsOptionsButtonPressed)
+    {
+      AudioManager::Get()->PlaySound(MainMenuObject->ClickSound);
+      SetCurrentState(EGameState::OPTIONS);
+      OptionsMenuObject->LastGameState = EGameState::MAIN_MENU;
+    }
+
+    if (MainMenuObject->bIsQuitButtonPressed)
+    {
     }
     MainMenuObject->Draw(Engine::Get());
 
@@ -181,9 +195,28 @@ void GameStateObject::Tick(float DeltaTime)
       return;
     }
 
+    if (PauseMenuObject->bIsOptionsButtonclicked)
+    {
+      AudioManager::Get()->PlaySound(PauseMenuObject->ClickSound);
+      PauseMenuObject->bIsOptionsButtonclicked = false;
+      OptionsMenuObject->LastGameState = EGameState::PAUSED;
+      SetCurrentState(EGameState::OPTIONS);
+      return;
+    }
+
     PauseMenuObject->Draw(Engine::Get());
     break;
-
+  case EGameState::OPTIONS:
+    if (OptionsMenuObject && !OptionsMenuObject->bIsInitialized)
+    {
+      OptionsMenuObject->Initialize();
+      return;
+    }
+    else
+      OptionsMenuObject->Draw();
+    if (OptionsMenuObject->bIsBackButtonPressed)
+      SetCurrentState(OptionsMenuObject->LastGameState);
+    break;
   case EGameState::GAME_LOOP:
   {
     if (HudObject && !HudObject->bIsInitialized)

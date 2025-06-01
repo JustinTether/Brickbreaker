@@ -3,6 +3,8 @@
 #include <random>
 
 AudioManager* AudioManager::s_instance = nullptr;
+float AudioManager::MusicVolume = 1.0f;
+float AudioManager::EffectsVolume = 1.0f;
 
 AudioManager::AudioManager()
 {
@@ -14,7 +16,18 @@ AudioManager::AudioManager()
   //     pCustomBackendVTables;
 
   BackgroundMusicIDs.push_back(
-      RegisterNewSound("assets/sounds/music/Hip-HopLoop.ogg"));
+      RegisterNewSound("assets/sounds/music/Hip-HopLoop.ogg", false));
+  BackgroundMusicIDs.push_back(
+      RegisterNewSound("assets/sounds/music/CrunchyBassLoop.ogg", false));
+  BackgroundMusicIDs.push_back(
+      RegisterNewSound("assets/sounds/music/Space-SynthLoop.ogg", false));
+  BackgroundMusicIDs.push_back(
+      RegisterNewSound("assets/sounds/music/Space-SynthLoop02.ogg", false));
+  BackgroundMusicIDs.push_back(
+      RegisterNewSound("assets/sounds/music/TripleHatLoop.ogg", false));
+
+  // SetMusicVolume(0.5f);
+  SetEffectsVolume(0.5f);
 }
 
 AudioManager* AudioManager::Get()
@@ -32,10 +45,14 @@ void AudioManager::PlaySound(int InSoundID, bool bShouldLoop)
   MiniAudio.Play(InSoundID, bShouldLoop);
 }
 
-const int& AudioManager::RegisterNewSound(std::string SoundFilePath)
+const int& AudioManager::RegisterNewSound(std::string SoundFilePath,
+                                          bool bIsEffect)
 {
   int SoundID;
   SoundID = MiniAudio.LoadSound(SoundFilePath);
+
+  if (bIsEffect)
+    MiniAudio.SetVolume(SoundID, EffectsVolume);
 
   RegisteredSoundIDs.push_back(SoundID);
 
@@ -61,3 +78,24 @@ void AudioManager::StopBackgroundMusic()
 }
 
 void AudioManager::Tick() {}
+
+void AudioManager::SetMusicVolume(float InNewVolume)
+{
+  MiniAudio.SetVolume(CurrentlyPlayingBackgroundID, InNewVolume);
+  MusicVolume = InNewVolume;
+}
+
+void AudioManager::SetEffectsVolume(float InNewVolume)
+{
+  for (int ID : RegisteredSoundIDs)
+  {
+    if (ID != CurrentlyPlayingBackgroundID)
+      MiniAudio.SetVolume(ID, InNewVolume);
+  }
+
+  EffectsVolume = InNewVolume;
+}
+
+float AudioManager::GetMusicVolume() { return MusicVolume; }
+
+float AudioManager::GetEffectsVolume() { return EffectsVolume; }

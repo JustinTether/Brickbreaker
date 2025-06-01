@@ -11,4 +11,5 @@ public:
   void Draw(Engine* Engine);
   bool bIsInitialized = false;
   bool bIsResumeButtonClicked = false;
+  bool bIsOptionsButtonclicked = false;
 };

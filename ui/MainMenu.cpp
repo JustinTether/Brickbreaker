@@ -75,6 +75,35 @@ void MainMenuGUI::Draw(Engine* Engine)
 	else
 	  bIsStartButtonPressed = false;
       }
+
+      CLAY({.id = CLAY_ID("OptionsButton"),
+            .layout = {.sizing = {.width = CLAY_SIZING_FIT(0),
+                                  .height = CLAY_SIZING_FIT(0)},
+                       .padding = {8, 8, 15, 15},
+                       .childAlignment = {.x = CLAY_ALIGN_X_CENTER,
+                                          .y = CLAY_ALIGN_Y_CENTER},
+                       .layoutDirection = CLAY_TOP_TO_BOTTOM},
+            .backgroundColor = Clay_Hovered()
+                                   ? PixelToClayColor(olc::GREY)
+                                   : PixelToClayColor(olc::DARK_GREY),
+            .border = {.color = PixelToClayColor(olc::WHITE),
+                       .width = {.left = 1, .right = 1, .top = 1, .bottom = 1}}
+
+      })
+      {
+	CLAY_TEXT(CLAY_STRING("Options"),
+	          CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
+	                            .fontSize = 8}));
+
+	// Handle Mouse clicking the Start button
+	if (Engine->GetMouse(0).bPressed &&
+	    Clay_PointerOver(CLAY_ID("OptionsButton")))
+	{
+	  bIsOptionsButtonPressed = true;
+	}
+	else
+	  bIsOptionsButtonPressed = false;
+      };
       CLAY({.id = CLAY_ID("QuitButton"),
             .layout = {.sizing = {.width = CLAY_SIZING_FIT(0),
                                   .height = CLAY_SIZING_FIT(0)},
@@ -93,6 +122,15 @@ void MainMenuGUI::Draw(Engine* Engine)
 	CLAY_TEXT(CLAY_STRING("Quit"),
 	          CLAY_TEXT_CONFIG({.textColor = PixelToClayColor(olc::WHITE),
 	                            .fontSize = 8}));
+
+	// Handle Mouse clicking the Start button
+	if (Engine->GetMouse(0).bPressed &&
+	    Clay_PointerOver(CLAY_ID("QuitButton")))
+	{
+	  bIsQuitButtonPressed = true;
+	}
+	else
+	  bIsQuitButtonPressed = false;
       };
     }
   };
