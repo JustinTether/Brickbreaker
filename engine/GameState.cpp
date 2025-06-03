@@ -2,6 +2,7 @@
 #include "GameState.h"
 #include "engine.h"
 #include "engine/AudioManager.h"
+#include "engine/SaveManager.h"
 #include "obj/Ball.h"
 #include "obj/Bat.h"
 #include "ui/GameOverMenu.h"
@@ -32,6 +33,8 @@ GameStateObject::GameStateObject()
   UpgradeFactoryObject->RegisterUpgrade(
       "ThreeNewBallsUpgrade",
       []() { return std::make_shared<NewBallsUpgrade>(10.0, 3); });
+
+  LoadGameState();
 }
 
 void GameStateObject::InitializeGameState(bool bShouldReset)
@@ -96,6 +99,40 @@ void GameStateObject::InitializeGameState(bool bShouldReset)
           std::static_pointer_cast<BaseObject>(NewBrick));
     }
   }
+}
+
+SaveState& GameStateObject::GetSaveStateData() { return SaveStateData; }
+
+void GameStateObject::LoadGameState()
+{
+  SaveManager::Get()->LoadSaveState(SaveStateData);
+
+  // Load the individual components of our save state back to their respective
+  // objects
+  AudioManager::Get()->SetEffectsVolume(
+      SaveStateData.AudioLevels.EffectsVolume);
+  AudioManager::Get()->SetMusicVolume(SaveStateData.AudioLevels.MusicVolume);
+}
+
+void GameStateObject::SaveGameState()
+{
+  // Ensure our SaveState is populated with the correct data
+  SaveStateData.AudioLevels.EffectsVolume =
+      AudioManager::Get()->GetEffectsVolume();
+  SaveStateData.AudioLevels.MusicVolume = AudioManager::Get()->GetMusicVolume();
+
+  SaveManager::Get()->SaveStateData(SaveStateData);
+}
+
+void GameStateObject::SetGameState(SaveState& SaveGameStateData)
+{
+  SaveStateData = SaveGameStateData;
+
+  // Load the individual components of our save state back to their respective
+  // objects
+  AudioManager::Get()->SetEffectsVolume(
+      SaveStateData.AudioLevels.EffectsVolume);
+  AudioManager::Get()->SetMusicVolume(SaveStateData.AudioLevels.MusicVolume);
 }
 
 // Mostly used for debugging or a 'random' mode, these aren't going to be
@@ -215,7 +252,10 @@ void GameStateObject::Tick(float DeltaTime)
     else
       OptionsMenuObject->Draw();
     if (OptionsMenuObject->bIsBackButtonPressed)
+    {
+      SaveGameState();
       SetCurrentState(OptionsMenuObject->LastGameState);
+    }
     break;
   case EGameState::GAME_LOOP:
   {
@@ -285,11 +325,7 @@ void GameStateObject::Tick(float DeltaTime)
   }
 }
 
-void GameStateObject::ResetGame()
-{
-  NumBallsRemaining = 3;
-  AudioManager::Get()->StartBackgroundMusic();
-}
+void GameStateObject::ResetGame() { NumBallsRemaining = 3; }
 
 EGameState GameStateObject::GetCurrentState() { return CurrentGameState; }
 
