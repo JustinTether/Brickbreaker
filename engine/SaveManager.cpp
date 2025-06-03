@@ -15,6 +15,8 @@ SaveManager* SaveManager::Get()
   return s_instance;
 }
 
+// 'static' wrapper function whos name is not mangled by the compiler, so we can
+// reference it with JS interop
 #ifdef __EMSCRIPTEN__
 extern "C"
 {
@@ -28,8 +30,6 @@ extern "C"
 
 void SaveManager::LoadSaveState(SaveState& SaveStateData)
 {
-
-// refactored approach using stringstream
 #ifdef __EMSCRIPTEN__
 
   EM_ASM(

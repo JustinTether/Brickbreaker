@@ -106,12 +106,6 @@ SaveState& GameStateObject::GetSaveStateData() { return SaveStateData; }
 void GameStateObject::LoadGameState()
 {
   SaveManager::Get()->LoadSaveState(SaveStateData);
-
-  // Load the individual components of our save state back to their respective
-  // objects
-  AudioManager::Get()->SetEffectsVolume(
-      SaveStateData.AudioLevels.EffectsVolume);
-  AudioManager::Get()->SetMusicVolume(SaveStateData.AudioLevels.MusicVolume);
 }
 
 void GameStateObject::SaveGameState()
