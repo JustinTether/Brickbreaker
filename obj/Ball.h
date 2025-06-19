@@ -15,6 +15,7 @@ public:
   void Update(Engine* EngineInstance, float DeltaTime) override;
 
   float BallRadius;
+  float OriginalBallRadius;
   olc::vf2d BallPosition;
   olc::vf2d BallVelocity;
   olc::Pixel BallColour;

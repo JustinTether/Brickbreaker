@@ -32,6 +32,8 @@ add_executable(BrickBreaker
     obj/upgrades/UpgradeFactory.h
     obj/upgrades/NewBallsUpgrade.cpp
     obj/upgrades/NewBallsUpgrade.h
+    obj/upgrades/LargeBallUpgrade.h
+    obj/upgrades/LargeBallUpgrade.cpp
     ui/MainMenu.cpp
     ui/MainMenu.h
     ui/PauseMenu.cpp
