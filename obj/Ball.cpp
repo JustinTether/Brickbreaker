@@ -8,7 +8,8 @@
 Ball::Ball(Engine* Engine)
 {
   // Set initial ball position to the middle of the screen-ish
-  BallRadius = 5;
+  OriginalBallRadius = 5;
+  BallRadius = OriginalBallRadius;
   BallColour = olc::BLUE;
   BallSpeed = 3.0f;
   float Angle = -0.4f;

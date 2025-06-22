@@ -32,6 +32,8 @@ add_executable(BrickBreaker
     obj/upgrades/UpgradeFactory.h
     obj/upgrades/NewBallsUpgrade.cpp
     obj/upgrades/NewBallsUpgrade.h
+    obj/upgrades/LargeBallUpgrade.h
+    obj/upgrades/LargeBallUpgrade.cpp
     ui/MainMenu.cpp
     ui/MainMenu.h
     ui/PauseMenu.cpp
@@ -51,6 +53,7 @@ add_executable(BrickBreaker
     engine/AudioManager.h
     engine/AudioManager.cpp
     engine/guuid.h
+    engine/SaveManager.cpp
     main.cpp
     main.h
     obj/Ball.h
@@ -86,5 +89,6 @@ if (${CMAKE_CXX_COMPILER} MATCHES ".*g[+][+]")
   target_include_directories(BrickBreaker PUBLIC ${VORBIS_INCLUDE_DIRS})
 endif()
 
+TARGET_INCLUDE_DIRECTORIES(BrickBreaker PRIVATE ${CMAKE_SOURCE_DIR}/lib/cereal)
 include(cmake/PGE.cmake)
 pge_set_emscripten_options(BrickBreaker)

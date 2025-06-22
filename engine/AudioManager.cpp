@@ -26,7 +26,9 @@ AudioManager::AudioManager()
   BackgroundMusicIDs.push_back(
       RegisterNewSound("assets/sounds/music/TripleHatLoop.ogg", false));
 
-  // SetMusicVolume(0.5f);
+  StartBackgroundMusic();
+
+  SetMusicVolume(0.5f);
   SetEffectsVolume(0.5f);
 }
 

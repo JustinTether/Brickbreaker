@@ -34,7 +34,7 @@ set(CMAKE_CXX_STANDARD 20)
 # Usage: pge_set_emscripten_options(target)
 function(pge_set_emscripten_options project_name)
     if (PGE_USE_EMSCRIPTEN)
-        set(PGE_LINKER_OPTIONS -sALLOW_MEMORY_GROWTH=1 -sASSERTIONS=1 -sSTACK_SIZE=131072 -sMAX_WEBGL_VERSION=2 -sMIN_WEBGL_VERSION=2 -sUSE_LIBPNG=1 -sUSE_ZLIB=1 -sUSE_VORBIS=1 -sUSE_OGG=1 --emrun)
+        set(PGE_LINKER_OPTIONS -sALLOW_MEMORY_GROWTH=1 -sASSERTIONS=1 -sEXPORTED_RUNTIME_METHODS=ccall,HEAPF32 -sSTACK_SIZE=131072 -sMAX_WEBGL_VERSION=2 -sMIN_WEBGL_VERSION=2 -sUSE_LIBPNG=1 -sUSE_ZLIB=1 -sUSE_VORBIS=1 -sUSE_OGG=1 -lidbfs.js --emrun)
         target_link_options(${project_name} PRIVATE -sEXCEPTION_CATCHING_ALLOWED=[compile+link])
         target_link_options(${project_name} PRIVATE -sEXPORTED_RUNTIME_METHODS=["HEAPF32"])
 
