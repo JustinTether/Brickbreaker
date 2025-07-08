@@ -138,6 +138,36 @@ void GameStateObject::SetGameState(SaveState& SaveGameStateData)
   AudioManager::Get()->SetMusicVolume(SaveStateData.AudioLevels.MusicVolume);
 }
 
+void GameStateObject::CreateNewUpgrade(olc::vf2d StartingPosition)
+{
+  std::random_device RandomDevice;
+  std::mt19937 Generator(RandomDevice());
+
+  const std::vector<std::string> AvailableUpgrades =
+      UpgradeFactoryObject->GetRegisteredUpgrades();
+
+  std::uniform_int_distribution<> Distrobution(0, AvailableUpgrades.size() - 1);
+  int RandomIndex = Distrobution(Generator);
+
+  std::string ChosenUpgradeType = AvailableUpgrades[RandomIndex];
+
+  // Otherwise, we just add a new upgrade
+  std::shared_ptr<BaseUpgrade> ChosenUpgrade =
+      UpgradeFactoryObject->CreateUpgrade(ChosenUpgradeType);
+
+  // Set the Name of the object to the stringified type name for later use in
+  // debug UI
+  ChosenUpgrade->Name = ChosenUpgradeType;
+  ChosenUpgrade->PosX = StartingPosition.x;
+  ChosenUpgrade->PosY = StartingPosition.y;
+  Engine::Get()->AddNewGameObject(ChosenUpgrade);
+}
+
+void GameStateObject::ApplyUpgrade(BaseUpgrade* UpgradeToApply)
+{
+  UpgradeToApply->bIsApplied = true;
+}
+
 // Mostly used for debugging or a 'random' mode, these aren't going to be
 // garaunteed fun or optimized levels
 void GameStateObject::GenerateRandomLevel()

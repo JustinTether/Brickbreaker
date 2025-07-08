@@ -1,5 +1,5 @@
-#include "BaseBrick.h"
 #include "../engine/engine.h"
+#include "BaseBrick.h"
 #include "engine/GameState.h"
 
 BaseBrick::BaseBrick()
@@ -51,14 +51,6 @@ void BaseBrick::OnCollide()
   if (bIsAir || bIsWall)
     return;
 
-  if (bIsUpgrade)
-  {
-    Engine::Get()->GameState->ApplyRandomUpgrade();
-    bIsUpgrade = false;
-    bIsAir = true;
-    return;
-  }
-
   MaxHits--;
 
   if (MaxHits == 0)
@@ -74,7 +66,8 @@ void BaseBrick::OnCollide()
     // approach
     if (rand() % 100 + 0 >= 75)
     {
-      bIsUpgrade = true;
+      Engine::Get()->GameState->CreateNewUpgrade(
+          olc::vf2d(XPosition, YPosition));
       return;
     }
 

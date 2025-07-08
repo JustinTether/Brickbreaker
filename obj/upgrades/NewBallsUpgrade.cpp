@@ -24,6 +24,8 @@ void NewBallsUpgrade::ApplyUpgrade(Engine* Engine)
   {
     Engine->AddNewGameObject(Ball);
   }
+
+  BaseUpgrade::ApplyUpgrade(Engine);
 }
 
 void NewBallsUpgrade::RemoveUpgrade(Engine* Engine)

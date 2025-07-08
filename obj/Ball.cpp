@@ -48,7 +48,7 @@ void Ball::Update(Engine* Engine, float DeltaTime)
   }
 
   std::shared_ptr<Bat> UserBat = std::static_pointer_cast<Bat>(BatObjects[0]);
-  float BatPosition = UserBat->BatPosition;
+  float BatPosition = UserBat->BatPosition.x;
 
   // Check if modified ball position is at the same y level as the paddle
   if (ModifiedBallPosition.y >=

@@ -7,7 +7,7 @@ class Engine;
 class Bat : public BaseObject
 {
 public:
-  float BatPosition;
+  olc::vi2d BatPosition;
   float BatWidth;
   float BatSpeed;
   float BatHeight;

@@ -29,6 +29,7 @@ void LargeBallUpgrade::ApplyUpgrade(Engine* Engine)
 
   OldBallSize = UserBall->OriginalBallRadius;
   UserBall->BallRadius = UserBall->BallRadius + NewBallSize;
+  BaseUpgrade::ApplyUpgrade(Engine);
 }
 
 void LargeBallUpgrade::RemoveUpgrade(Engine* Engine)

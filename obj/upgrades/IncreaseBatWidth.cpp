@@ -22,6 +22,7 @@ void IncreaseBatWidthUpgrade::ApplyUpgrade(Engine* Engine)
 
   OldBatWidth = UserBat->OriginalBatWidth;
   UserBat->BatWidth = NewBatWidth;
+  BaseUpgrade::ApplyUpgrade(Engine);
 }
 
 void IncreaseBatWidthUpgrade::RemoveUpgrade(Engine* Engine)

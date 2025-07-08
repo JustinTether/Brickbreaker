@@ -71,6 +71,8 @@ public:
   void LoadGameState();
   void SaveGameState();
   void SetGameState(SaveState& SaveGameData);
+  void CreateNewUpgrade(olc::vf2d StartingPosition);
+  void ApplyUpgrade(BaseUpgrade* UpgradeToApply);
 
   int MapWidth = 24;
   int MapHeight = 30;
